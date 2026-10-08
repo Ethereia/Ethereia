@@ -27,3 +27,4 @@ docs/
 .vscode/
 
 *.uid
+mcp_connectivity_test.tscn

@@ -20,6 +20,7 @@ func advance_month(steps: int = 1) -> void:
 			EventBus.year_changed.emit(year)
 	EventBus.month_changed.emit(year, month)
 
+@warning_ignore("integer_division")
 func get_season() -> int:
 	return (month - 1) / 3 + 1  # 1春 2夏 3秋 4冬
 
