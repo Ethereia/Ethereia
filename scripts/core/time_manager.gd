@@ -11,6 +11,9 @@ var day := 1    # 行动计数占位，阶段8细化
 func _ready() -> void:
 	add_to_group("savable")
 
+func get_save_section() -> String:
+	return "time_state"  # doc 29 §3 标准存档段
+
 func advance_month(steps: int = 1) -> void:
 	for i in steps:
 		month += 1
@@ -20,8 +23,8 @@ func advance_month(steps: int = 1) -> void:
 			EventBus.year_changed.emit(year)
 	EventBus.month_changed.emit(year, month)
 
-@warning_ignore("integer_division")
 func get_season() -> int:
+	@warning_ignore("integer_division")
 	return (month - 1) / 3 + 1  # 1春 2夏 3秋 4冬
 
 func reset() -> void:

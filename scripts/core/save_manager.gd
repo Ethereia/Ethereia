@@ -1,11 +1,18 @@
 ## 存档管理器：版本化 + 原子写入（doc 16）
 ## 原则：只存"状态"（id/数量/变量），不存静态定义
-## 纪律：每个需要持久化的系统实现 get_save_state()/load_save_state() 并加入 "savable" 组
-## 注意：阶段0 为骨架实现（按节点名分节）；阶段1 将重构为 doc 16 的 11 段存档结构
+## 纪律：每个需要持久化的系统实现 get_save_state()/load_save_state() 并加入 "savable" 组，
+##       并通过 get_save_section() 声明所属存档段（doc 29 §3 的 11 段标准结构）
 extends Node
 
 const SAVABLE_GROUP := "savable"
-const SAVE_VERSION := 1
+const SAVE_VERSION := 2
+
+## 11 段标准存档结构（doc 16 §4 / doc 29 §3，ADR-007）
+const SAVE_SECTIONS: Array[String] = [
+	"player_state", "cultivation_state", "inventory", "characters", "sect_state",
+	"world_state", "quests", "factions", "time_state", "settings",
+]
+
 const SAVE_DIR := "user://saves/"
 const AUTOSAVE_SLOT := "autosave"
 const QUICKSAVE_SLOT := "quicksave"
@@ -60,11 +67,12 @@ func load_game(slot: String, apply: bool = true) -> bool:
 func apply_pending_load() -> void:
 	if _pending_data.is_empty():
 		return
-	var sections: Dictionary = _pending_data.get("sections", {})
 	for node in get_tree().get_nodes_in_group(SAVABLE_GROUP):
-		var key := String(node.name)
-		if sections.has(key) and node.has_method("load_save_state"):
-			node.load_save_state(sections[key])
+		if not node.has_method("load_save_state"):
+			continue
+		var key := _section_key_of(node)
+		if _pending_data.has(key):
+			node.load_save_state(_pending_data[key])
 	_pending_data = {}
 	EventBus.game_loaded.emit(_last_slot)
 
@@ -94,19 +102,28 @@ func get_latest_slot() -> String:
 	dir.list_dir_end()
 	return best_slot
 
+## 取 savable 节点的存档段键：优先 get_save_section()，缺省回退节点名
+static func _section_key_of(node: Node) -> String:
+	var key := ""
+	if node.has_method("get_save_section"):
+		key = String(node.get_save_section())
+	if key.is_empty() or not key in SAVE_SECTIONS:
+		key = String(node.name)
+	return key
+
 func _collect_save_data() -> Dictionary:
-	var sections: Dictionary = {}
+	var data: Dictionary = {}
+	for section in SAVE_SECTIONS:
+		data[section] = {}
 	for node in get_tree().get_nodes_in_group(SAVABLE_GROUP):
 		if node.has_method("get_save_state"):
-			sections[String(node.name)] = node.get_save_state()
-	return {
-		"save_version": SAVE_VERSION,
-		"timestamp": Time.get_datetime_string_from_system(true, false),
-		"sections": sections,
-	}
+			var key := _section_key_of(node)
+			data[key].merge(node.get_save_state(), true)
+	data["save_version"] = SAVE_VERSION
+	data["timestamp"] = Time.get_datetime_string_from_system(true, false)
+	return data
 
-## 版本迁移链（doc 16）：数据结构变更时在此追加链式迁移函数
-## 示例：v1→v2 时添加 _migrate_v1_to_v2() 并在 match 中接线
+## 版本迁移链（doc 16 §7）：数据结构变更时在此追加链式迁移函数
 func _migrate(data: Dictionary) -> Dictionary:
 	var version := int(data.get("save_version", 0))
 	while version < SAVE_VERSION:
@@ -114,6 +131,9 @@ func _migrate(data: Dictionary) -> Dictionary:
 			0:
 				data = _migrate_v0_to_v1(data)
 				version = 1
+			1:
+				data = _migrate_v1_to_v2(data)
+				version = 2
 			_:
 				push_error("SaveManager: 未知存档版本 %d，中止迁移" % version)
 				break
@@ -122,4 +142,12 @@ func _migrate(data: Dictionary) -> Dictionary:
 func _migrate_v0_to_v1(data: Dictionary) -> Dictionary:
 	# 占位：为无版本号的极早期存档补上版本号
 	data["save_version"] = 1
+	return data
+
+func _migrate_v1_to_v2(data: Dictionary) -> Dictionary:
+	# v1 的 sections{节点名} → v2 的 11 段标准结构（doc 29 §3）
+	var sections: Dictionary = data.get("sections", {})
+	data["time_state"] = sections.get("TimeManager", {})
+	data["player_state"] = sections.get("Game", {})
+	data.erase("sections")
 	return data

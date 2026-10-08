@@ -25,6 +25,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("game_menu"):
 		GameManager.return_to_menu()
 
+func get_save_section() -> String:
+	return "player_state"  # 阶段2后由 Player 节点接管此段
+
 func get_save_state() -> Dictionary:
 	# 占位：真实玩家状态在阶段2由 Player 接管
 	return {"skeleton_marker": "stage0_game"}
