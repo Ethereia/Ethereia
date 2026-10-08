@@ -1,0 +1,71 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_menu"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.09, 0.12, 1)
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Center"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Center/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "仙冥大陆"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Center/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+modulate = Color(1, 1, 1, 0.6)
+text = "Ethereia · 阶段0 技术骨架"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="Center/VBox"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="NewGameButton" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(220, 40)
+layout_mode = 2
+text = "新的游戏"
+
+[node name="ContinueButton" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(220, 40)
+layout_mode = 2
+text = "继续"
+
+[node name="SettingsButton" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(220, 40)
+layout_mode = 2
+text = "设置（未实现）"
+disabled = true
+
+[node name="QuitButton" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(220, 40)
+layout_mode = 2
+text = "退出"

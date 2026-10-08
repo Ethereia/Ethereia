@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/core/game.gd" id="1_game"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_game")
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="DebugPanel" type="PanelContainer" parent="UILayer"]
+offset_left = 12.0
+offset_top = 12.0
+offset_right = 260.0
+offset_bottom = 260.0
+
+[node name="VBox" type="VBoxContainer" parent="UILayer/DebugPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="UILayer/DebugPanel/VBox"]
+layout_mode = 2
+text = "阶段0 · 技术骨架调试"
+
+[node name="TimeLabel" type="Label" parent="UILayer/DebugPanel/VBox"]
+layout_mode = 2
+text = "第 1 年 1 月"
+
+[node name="AdvanceMonthButton" type="Button" parent="UILayer/DebugPanel/VBox"]
+layout_mode = 2
+text = "推进月份"
+
+[node name="SaveButton" type="Button" parent="UILayer/DebugPanel/VBox"]
+layout_mode = 2
+text = "保存（槽位 test）"
+
+[node name="LoadButton" type="Button" parent="UILayer/DebugPanel/VBox"]
+layout_mode = 2
+text = "读取（槽位 test）"
+
+[node name="Hint" type="Label" parent="UILayer/DebugPanel/VBox"]
+layout_mode = 2
+modulate = Color(1, 1, 1, 0.5)
+text = "Esc 返回主菜单"
+
+[node name="MenuButton" type="Button" parent="UILayer/DebugPanel/VBox"]
+layout_mode = 2
+text = "返回主菜单"
