@@ -59,4 +59,10 @@ func _refresh() -> void:
 	_hp_bar.value = s.current_hp
 	_mp_bar.max_value = s.max_mp
 	_mp_bar.value = s.current_mp
-	_realm_label.text = "%s（%s）" % [s.data.display_name, CultivationUtils.realm_display(s.data.realm_index, s.data.realm_layer)]
+	# 境界显示源 = CultivationManager（realm 运行时值归修仙系统所有，阶段5）
+	var managers := get_tree().get_nodes_in_group("cultivation_manager")
+	if managers.size() > 0:
+		var cm: Node = managers[0]
+		_realm_label.text = "%s（%s）" % [s.data.display_name, CultivationUtils.realm_display(cm.realm_index, cm.realm_layer)]
+	else:
+		_realm_label.text = "%s（%s）" % [s.data.display_name, CultivationUtils.realm_display(s.data.realm_index, s.data.realm_layer)]

@@ -43,7 +43,41 @@ func setup(p_data: CharacterData) -> void:
 	evasion = float(bs.get("evasion", 0.05))
 	current_hp = max_hp
 	current_mp = max_mp
+	max_stamina = 100.0
+	current_stamina = 100.0
 	_dead = false
+
+
+## 境界/运功变化后重算（阶段5）：max 类按新倍率，current 按原比例保持，应用功法属性倾向
+## 由 CultivationManager 调用（realm 运行时值归管理器所有）
+func refresh_by_realm(realm_index: int, realm_layer: int, technique: TechniqueData) -> void:
+	if data == null:
+		return
+	var hp_ratio := current_hp / max_hp if max_hp > 0.0 else 1.0
+	var mp_ratio := current_mp / max_mp if max_mp > 0.0 else 1.0
+	var mult := CultivationUtils.stat_multiplier(realm_index, realm_layer)
+	var bs: Dictionary = data.base_stats
+	max_hp = float(bs.get("hp", 100.0)) * mult
+	max_mp = float(bs.get("mp", 50.0)) * mult
+	atk = float(bs.get("atk", 10.0)) * mult
+	defense = float(bs.get("def", 5.0)) * mult
+	m_atk = float(bs.get("m_atk", 5.0)) * mult
+	m_def = float(bs.get("m_def", 5.0)) * mult
+	# 功法属性倾向（attribute_tendency {stat: 百分比加成}）
+	if technique != null:
+		for stat: String in technique.attribute_tendency:
+			var bonus: float = float(technique.attribute_tendency[stat])
+			match stat:
+				"atk": atk *= 1.0 + bonus
+				"def": defense *= 1.0 + bonus
+				"m_atk": m_atk *= 1.0 + bonus
+				"m_def": m_def *= 1.0 + bonus
+				"hp": max_hp *= 1.0 + bonus
+				"mp": max_mp *= 1.0 + bonus
+	current_hp = clampf(hp_ratio * max_hp, 1.0, max_hp)
+	current_mp = clampf(mp_ratio * max_mp, 0.0, max_mp)
+	_dead = current_hp <= 0.0
+	EventBus.player_stats_changed.emit()
 
 
 func take_damage(amount: float) -> void:

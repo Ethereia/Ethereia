@@ -11,6 +11,15 @@ nodes = Array[Dictionary]([{
 "next": "n1",
 "text": "需要帮忙吗？"
 }, {
+"effects": [{
+"key": "technique",
+"op": "learn",
+"target": "player",
+"value": "technique_yin_ling_jue"
+}],
+"next": "n3",
+"text": "请她辨认功法残页。"
+}, {
 "effects": [],
 "next": "n2",
 "text": "告辞。"
@@ -37,5 +46,13 @@ nodes = Array[Dictionary]([{
 "node_id": "n2",
 "speaker_id": "char_su_zhi",
 "text": "慢走。"
+}, {
+"choices": [],
+"conditions": {},
+"emotion": "震惊",
+"next": "",
+"node_id": "n3",
+"speaker_id": "char_su_zhi",
+"text": "……这笔迹！《引灵诀》——我果然没猜错。拿去好生参悟，此功法与你根骨相合。"
 }])
 entry_node_id = "n0"

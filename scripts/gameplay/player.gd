@@ -36,6 +36,11 @@ func element_of() -> String:
 
 func _physics_process(delta: float) -> void:
 	status.tick(delta, self)
+	# 打坐中禁移（查管理器组，不持引用）
+	var managers := get_tree().get_nodes_in_group("cultivation_manager")
+	if managers.size() > 0 and bool(managers[0].get("meditating")):
+		velocity = Vector2.ZERO
+		return
 	if status.is_frozen():
 		velocity = Vector2.ZERO  # 冻结：禁移动（攻击 CD 照走，普攻 tick 不在物理帧）
 		return

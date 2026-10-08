@@ -239,6 +239,17 @@ func _gen_items() -> Array[Resource]:
 	pill.effects = [{"stat": "hp", "op": "add", "value": 30, "duration": 0}]
 	pill.description = "苏芷配制的伤药。入口微苦，药力温和。"
 	list.append(pill)
+
+	var qi_pill := ItemData.new()
+	qi_pill.id = "item_ju_qi_san"
+	qi_pill.display_name = "聚气散"
+	qi_pill.item_type = ItemData.ItemType.PILL
+	qi_pill.grade = 1
+	qi_pill.stackable = true
+	qi_pill.base_value = 25
+	qi_pill.effects = [{"stat": "realm_exp", "op": "add", "value": 50, "duration": 0}]
+	qi_pill.description = "苏芷以灵草粗炼的助修散剂，服下后灵气充盈，境界经验 +50。"
+	list.append(qi_pill)
 	return list
 
 
@@ -526,10 +537,12 @@ func _make_dlg_su_zhi() -> DialogueData:
 	d.nodes = [
 		{"node_id": "n0", "speaker_id": "char_su_zhi", "text": "欢迎光临回春堂。最近灵草收成不好，我正想再去岭里采些……", "emotion": "温和", "conditions": {}, "choices": [
 			{"text": "需要帮忙吗？", "effects": [], "next": "n1"},
+			{"text": "请她辨认功法残页。", "effects": [{"target": "player", "key": "technique", "op": "learn", "value": "technique_yin_ling_jue"}], "next": "n3"},
 			{"text": "告辞。", "effects": [], "next": "n2"},
 		], "next": ""},
 		{"node_id": "n1", "speaker_id": "char_su_zhi", "text": "你有心啦。对了——若在岭里见到奇怪的残页，带来给我看看。我最近在研究一些……很古老的笔迹。", "emotion": "好奇", "conditions": {}, "choices": [], "next": ""},
 		{"node_id": "n2", "speaker_id": "char_su_zhi", "text": "慢走。", "emotion": "温和", "conditions": {}, "choices": [], "next": ""},
+		{"node_id": "n3", "speaker_id": "char_su_zhi", "text": "……这笔迹！《引灵诀》——我果然没猜错。拿去好生参悟，此功法与你根骨相合。", "emotion": "震惊", "conditions": {}, "choices": [], "next": ""},
 	]
 	return d
 

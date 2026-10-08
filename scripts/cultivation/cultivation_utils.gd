@@ -21,3 +21,27 @@ static func realm_display(realm_index: int, realm_layer: int) -> String:
 	var layer := clampi(realm_layer, 1, CultivationConstants.LAYERS_PER_REALM)
 	var cn_layers := ["一", "二", "三", "四", "五", "六", "七", "八", "九"]
 	return CultivationConstants.REALMS[index] + cn_layers[layer - 1] + "层"
+
+
+# --- 修仙数值（阶段5，占位曲线；Phase 5 收尾/阶段6 调参） ---
+
+## 升至下一小层所需境界经验：炼气一层→二层 = 100（打坐约 95 秒）
+static func required_exp(realm_index: int, realm_layer: int) -> int:
+	return 50 + realm_index * 50 + (realm_layer - 1) * 20
+
+
+## 打坐基础速率（exp/秒，未乘功法效率）
+const MEDITATE_EXP_PER_SEC := 1.0
+## 推进月份自动修炼经验
+const MONTHLY_EXP := 30
+## 击杀敌人经验
+const KILL_EXP := 5
+## 打坐时运功功法完成度增速（每秒，上限 progress_max）
+const TECHNIQUE_PROGRESS_PER_SEC := 0.1
+
+
+## 大境界突破 8 因子权重（与 CultivationConstants.BREAKTHROUGH_WEIGHTS 对齐的因子键清单）
+const BREAKTHROUGH_FACTORS: Array[String] = [
+	"realm_exp", "spirit_quality", "root_affinity", "dao_heart",
+	"technique_mastery", "materials", "environment", "random",
+]
