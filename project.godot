@@ -38,6 +38,10 @@ window/stretch/aspect="expand"
 
 enabled=PackedStringArray("res://addons/godot_ai/plugin.cfg")
 
+[gui]
+
+theme/custom_font="res://assets/fonts/SourceHanSansSC-Medium.otf"
+
 [input]
 
 move_left={
