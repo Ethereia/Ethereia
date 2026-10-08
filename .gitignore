@@ -25,3 +25,5 @@ addons/
 .trae/
 docs/
 .vscode/
+
+*.uid
