@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/character_data.gd" id="1_gh8pq"]
+
+[resource]
+script = ExtResource("1_gh8pq")
+id = "char_hei_feng_dao_fei"
+display_name = "黑风盗匪"
+title = "黑风岭流匪"
+character_type = 3
+faction_id = "faction_hei_feng_dao"
+realm_layer = 5
+spirit_roots = {
+"金": 45
+}
+dao_heart = {
+"坚毅": 30,
+"慈悲": 5,
+"执念": 35,
+"杀伐": 60,
+"求知": 15,
+"自由": 55
+}
+base_stats = {
+"accuracy": 0.86,
+"atk": 15,
+"crit": 0.06,
+"def": 9,
+"evasion": 0.1,
+"hp": 110,
+"m_atk": 3,
+"m_def": 5,
+"mp": 15,
+"speed": 9
+}
+spirit_stats = {
+"因果": 30,
+"气运": 25,
+"灵根强度": 45,
+"神魂": 35
+}
+personality = "贪婪狠辣"
+goal = "劫够灵石后金盆洗手"
+fear = "官府缉拿与岭中妖狼"
+interest = "财物"
+secret = "他们劫的不只是货——上头有人专门收妖兽尸体"

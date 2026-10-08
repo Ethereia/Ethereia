@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="FactionData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1_tmb5i"]
+
+[resource]
+script = ExtResource("1_tmb5i")
+id = "faction_qingshi_town"
+display_name = "青石镇"
+faction_type = 2
+ideology = "安土重迁，凡人互助，在妖兽环伺的边地维持一方安居"
+relations = {
+"faction_hei_feng_dao": {
+"fear": 30,
+"relation_score": -60,
+"trade": 0,
+"trust": 0,
+"war_state": "敌对"
+}
+}
+territory = Array[String](["region_qingshi_town"])
+ai_profile = {
+"aggression": 10,
+"expansion": 5,
+"trade_preference": 70
+}
+description = "边地下州的一座凡人小镇，因镇口青石而得名。镇民以农耕和小宗灵草贸易为生。"

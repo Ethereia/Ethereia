@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/character_data.gd" id="1_htcwt"]
+
+[resource]
+script = ExtResource("1_htcwt")
+id = "char_a_ying"
+display_name = "阿萤"
+title = "外地来的少女"
+character_type = 1
+realm_index = 1
+spirit_roots = {
+"冥": 70
+}
+dao_heart = {
+"坚毅": 40,
+"慈悲": 30,
+"执念": 90,
+"杀伐": 15,
+"求知": 85,
+"自由": 60
+}
+base_stats = {
+"accuracy": 0.92,
+"atk": 4,
+"crit": 0.08,
+"def": 4,
+"evasion": 0.15,
+"hp": 70,
+"m_atk": 18,
+"m_def": 14,
+"mp": 80,
+"speed": 10
+}
+spirit_stats = {
+"因果": 85,
+"气运": 30,
+"灵根强度": 70,
+"神魂": 90
+}
+personality = "疏离寡言，语出惊人，眼睛总像在看别处"
+goal = "找到'记得死者的人'"
+fear = "被遗忘"
+interest = "会说真话的人"
+secret = "她反复梦见青石镇地底的一道门"

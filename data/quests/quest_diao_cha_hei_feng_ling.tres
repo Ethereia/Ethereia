@@ -1,0 +1,50 @@
+[gd_resource type="Resource" script_class="QuestData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/quest_data.gd" id="1_5vp1c"]
+
+[resource]
+script = ExtResource("1_5vp1c")
+id = "quest_diao_cha_hei_feng_ling"
+display_name = "调查黑风岭失踪事件"
+description = "青石镇接连有人在黑风岭失踪。镇长秦伯远请你进入黑风岭查明真相，击退作乱的妖兽，并回报调查结果。"
+giver = "char_qin_bo_yuan"
+objectives = Array[Dictionary]([{
+"count": 1,
+"params": {},
+"target_id": "region_hei_feng_ling",
+"type": "到达"
+}, {
+"count": 2,
+"params": {},
+"target_id": "char_ye_lang_yao",
+"type": "战斗"
+}, {
+"count": 1,
+"params": {
+"topic": "回报调查结果"
+},
+"target_id": "char_qin_bo_yuan",
+"type": "对话"
+}])
+rewards = Array[Dictionary]([{
+"key": "item:item_ling_shi",
+"op": "add",
+"target": "player",
+"value": 20
+}, {
+"key": "item:item_hui_xue_san",
+"op": "add",
+"target": "player",
+"value": 2
+}, {
+"key": "relation",
+"op": "add",
+"target": "faction:faction_qingshi_town",
+"value": 10
+}])
+consequences = Array[Dictionary]([{
+"key": "relation",
+"op": "add",
+"target": "faction:faction_qingshi_town",
+"value": -5
+}])

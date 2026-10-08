@@ -1,0 +1,73 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/event_data.gd" id="1_4dqi5"]
+
+[resource]
+script = ExtResource("1_4dqi5")
+id = "event_shao_nv_zhi_wen"
+title = "少女之问"
+description = "夜色渐深，阿萤忽然转头问你：「你相信死者会记得生前吗？」她的眼睛在月光下亮得不像话。"
+priority = 10
+conditions = Array[Dictionary]([{
+"key": "player.realm_layer",
+"op": ">=",
+"value": 2
+}])
+choices = Array[Dictionary]([{
+"delayed_effects": [{
+"key": "relationship",
+"op": "add",
+"target": "char:char_a_ying",
+"value": 10
+}],
+"effects": [{
+"key": "dao_heart.执念",
+"op": "add",
+"target": "player",
+"value": 5
+}],
+"hidden_effects": [],
+"hint": "",
+"requirements": [],
+"text": "「相信。逝者只是换了一种方式活着。」"
+}, {
+"delayed_effects": [{
+"key": "relationship",
+"op": "add",
+"target": "char:char_a_ying",
+"value": -5
+}],
+"effects": [{
+"key": "dao_heart.杀伐",
+"op": "add",
+"target": "player",
+"value": 5
+}],
+"hidden_effects": [],
+"hint": "",
+"requirements": [],
+"text": "「不信。人死如灯灭。」"
+}, {
+"delayed_effects": [{
+"key": "relationship",
+"op": "add",
+"target": "char:char_a_ying",
+"value": 5
+}],
+"effects": [{
+"key": "dao_heart.求知",
+"op": "add",
+"target": "player",
+"value": 5
+}],
+"hidden_effects": [{
+"key": "flag:a_ying_answer",
+"op": "set",
+"target": "world",
+"value": "curious"
+}],
+"hint": "",
+"requirements": [],
+"text": "「我不知道……但我想知道。」"
+}])
+involved_npcs = Array[String](["char_a_ying"])

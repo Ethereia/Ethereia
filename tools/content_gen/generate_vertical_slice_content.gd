@@ -1,0 +1,458 @@
+## 垂直切片首批内容生成器（doc 27 Step 2-9 配套数据，阶段1 收尾）
+## 运行方式：启动游戏后经 game_eval 调用 run_all()，产物为 data/ 下 .tres（引擎序列化）
+## 说明：base_stats / 伤害类数值为占位初值，Phase 4 战斗系统落地后统一调整
+## 可重复运行（覆盖保存，幂等）
+extends RefCounted
+
+
+func run_all() -> Dictionary:
+	var all: Array[Resource] = []
+	all.append_array(_gen_factions())
+	all.append_array(_gen_regions())
+	all.append_array(_gen_buildings())
+	all.append_array(_gen_techniques())
+	all.append_array(_gen_items())
+	all.append_array(_gen_characters())
+	all.append_array(_gen_quests())
+	all.append_array(_gen_events())
+
+	var report := {"saved": [], "reload_errors": []}
+	for res: Resource in all:
+		var path := _path_for(res.id)
+		var err := ResourceSaver.save(res, path)
+		report["saved"].append({"id": res.id, "path": path, "err": err})
+	# 回读校验：文件存在且能加载为正确类型
+	for res: Resource in all:
+		var back: Resource = load(_path_for(res.id))
+		if back == null or back.id != res.id:
+			report["reload_errors"].append(res.id)
+	return report
+
+
+func _path_for(id: String) -> String:
+	var table := ""
+	if id.begins_with("char_"):
+		table = "characters"
+	elif id.begins_with("faction_"):
+		table = "factions"
+	elif id.begins_with("region_"):
+		table = "regions"
+	elif id.begins_with("building_"):
+		table = "buildings"
+	elif id.begins_with("technique_"):
+		table = "techniques"
+	elif id.begins_with("item_"):
+		table = "items"
+	elif id.begins_with("quest_"):
+		table = "quests"
+	elif id.begins_with("event_"):
+		table = "events"
+	return "res://data/%s/%s.tres" % [table, id]
+
+
+# ---------------------------------------------------------------- 势力（2）
+
+func _gen_factions() -> Array[Resource]:
+	var list: Array[Resource] = []
+
+	var town := FactionData.new()
+	town.id = "faction_qingshi_town"
+	town.display_name = "青石镇"
+	town.faction_type = FactionData.FactionType.CITY
+	town.ideology = "安土重迁，凡人互助，在妖兽环伺的边地维持一方安居"
+	town.relations = {
+		"faction_hei_feng_dao": {"relation_score": -60, "trust": 0, "fear": 30, "trade": 0, "war_state": "敌对"},
+	}
+	town.territory = ["region_qingshi_town"]
+	town.ai_profile = {"aggression": 10, "expansion": 5, "trade_preference": 70}
+	town.description = "边地下州的一座凡人小镇，因镇口青石而得名。镇民以农耕和小宗灵草贸易为生。"
+	list.append(town)
+
+	var bandits := FactionData.new()
+	bandits.id = "faction_hei_feng_dao"
+	bandits.display_name = "黑风盗"
+	bandits.faction_type = FactionData.FactionType.WILDERNESS
+	bandits.ideology = "流寇结社，弱肉强食，交钱放行"
+	bandits.relations = {
+		"faction_qingshi_town": {"relation_score": -60, "trust": 0, "fear": 10, "trade": 20, "war_state": "敌对"},
+	}
+	bandits.territory = ["region_hei_feng_ling"]
+	bandits.ai_profile = {"aggression": 80, "expansion": 30, "trade_preference": 10}
+	bandits.description = "盘踞黑风岭的流匪，近来行踪诡秘，劫掠频率反常地高。"
+	list.append(bandits)
+	return list
+
+
+# ---------------------------------------------------------------- 区域（2）
+
+func _gen_regions() -> Array[Resource]:
+	var list: Array[Resource] = []
+
+	var town := RegionData.new()
+	town.id = "region_qingshi_town"
+	town.display_name = "青石镇"
+	town.terrain = "平原"
+	town.level_range = Vector2i(1, 5)
+	town.tags = ["城镇", "安全区", "农耕"]
+	town.danger_level = 0
+	town.resources = {}
+	town.locations = [
+		{"id": "loc_zhen_zhang_fu", "position": Vector2i(4, 3), "location_type": "官署", "level_range": Vector2i(1, 5), "terrain": "平原", "tags": ["建筑"], "resources": {}, "encounters": ["char_qin_bo_yuan"], "factions": ["faction_qingshi_town"], "quest_hooks": ["quest_diao_cha_hei_feng_ling"]},
+		{"id": "loc_hui_chun_tang", "position": Vector2i(7, 4), "location_type": "店铺", "level_range": Vector2i(1, 5), "terrain": "平原", "tags": ["药铺"], "resources": {"item_hui_xue_san": 2}, "encounters": ["char_su_zhi"], "factions": ["faction_qingshi_town"], "quest_hooks": []},
+		{"id": "loc_tie_jiang_pu", "position": Vector2i(5, 6), "location_type": "店铺", "level_range": Vector2i(1, 5), "terrain": "平原", "tags": ["铁匠铺"], "resources": {}, "encounters": ["char_tie_niu"], "factions": ["faction_qingshi_town"], "quest_hooks": []},
+		{"id": "loc_zhen_kou", "position": Vector2i(2, 8), "location_type": "入口", "level_range": Vector2i(1, 5), "terrain": "平原", "tags": ["镇口"], "resources": {}, "encounters": ["char_a_ying"], "factions": ["faction_qingshi_town"], "quest_hooks": []},
+	]
+	town.factions_present = ["faction_qingshi_town"]
+	town.ambient_bgm = ""
+	town.map_layer_paths = {}
+	list.append(town)
+
+	var mountain := RegionData.new()
+	mountain.id = "region_hei_feng_ling"
+	mountain.display_name = "黑风岭"
+	mountain.terrain = "山地"
+	mountain.level_range = Vector2i(2, 6)
+	mountain.tags = ["野外", "妖兽", "失踪传闻"]
+	mountain.danger_level = 45
+	mountain.resources = {"item_ling_cao": 3}
+	mountain.locations = [
+		{"id": "loc_hei_feng_xiao_jing", "position": Vector2i(3, 2), "location_type": "道路", "level_range": Vector2i(2, 4), "terrain": "山地", "tags": ["山道"], "resources": {"item_ling_cao": 1}, "encounters": ["char_ye_lang_yao", "char_hei_feng_dao_fei"], "factions": ["faction_hei_feng_dao"], "quest_hooks": []},
+		{"id": "loc_yao_lang_chao_xue", "position": Vector2i(8, 6), "location_type": "巢穴", "level_range": Vector2i(3, 6), "terrain": "山地", "tags": ["妖兽"], "resources": {}, "encounters": ["char_ye_lang_yao"], "factions": [], "quest_hooks": ["quest_diao_cha_hei_feng_ling"]},
+		{"id": "loc_fei_qi_kuang_keng", "position": Vector2i(6, 3), "location_type": "遗迹", "level_range": Vector2i(2, 5), "terrain": "山地", "tags": ["矿坑", "废弃"], "resources": {}, "encounters": ["char_hei_feng_dao_fei"], "factions": ["faction_hei_feng_dao"], "quest_hooks": []},
+	]
+	mountain.factions_present = ["faction_hei_feng_dao"]
+	mountain.ambient_bgm = ""
+	mountain.map_layer_paths = {}
+	list.append(mountain)
+	return list
+
+
+# ---------------------------------------------------------------- 建筑（1）
+
+func _gen_buildings() -> Array[Resource]:
+	var list: Array[Resource] = []
+
+	var b := BuildingData.new()
+	b.id = "building_ju_ling_zhen"
+	b.display_name = "聚灵阵"
+	b.max_level = 5
+	b.upgrade_cost = [
+		{"item_ling_shi": 50, "item_ling_cao": 10},
+		{"item_ling_shi": 120, "item_ling_cao": 25},
+		{"item_ling_shi": 300, "item_ling_cao": 60},
+		{"item_ling_shi": 800, "item_ling_cao": 150},
+		{"item_ling_shi": 2000, "item_ling_cao": 400},
+	]
+	b.upgrade_time_days = [1, 2, 4, 7, 12]
+	b.prestige_requirement = [0, 0, 10, 30, 60]
+	b.prereq_building = {}
+	b.production = {}
+	b.upkeep = {"item_ling_shi": 1}
+	b.unlock_effects = [
+		{"effect": "cultivation_env_bonus", "level": 1},
+		{"effect": "breakthrough_env_factor", "level": 3},
+		{"effect": "extra_disciple_slot", "level": 5},
+	]
+	b.description = "汇聚天地灵气的阵法基座，是临时驻地的第一块基石。阵内修炼事半功倍，高阶阵盘还能辅助突破。"
+	list.append(b)
+	return list
+
+
+# ---------------------------------------------------------------- 功法（1）
+
+func _gen_techniques() -> Array[Resource]:
+	var list: Array[Resource] = []
+
+	var t := TechniqueData.new()
+	t.id = "technique_yin_ling_jue"
+	t.display_name = "引灵诀"
+	t.tech_type = TechniqueData.TechType.MAIN
+	t.grade = TechniqueData.Grade.HUANG
+	t.element_affinity = []
+	t.attribute_tendency = {"m_atk": 0.10, "m_def": 0.10}
+	t.cultivation_efficiency = 1.05
+	t.spirit_root_requirement = {}
+	t.active_skill_ids = []
+	t.passive_effects = []
+	t.breakthrough_modifiers = {"spirit_quality": 2}
+	t.side_effects = ["灵力运转初见滞涩：修炼首月效率 -10%"]
+	t.hidden_trait = "残篇互补"
+	t.hidden_trait_condition = "集齐三张《引灵诀》残页（item_gong_fa_can_ye）拼合为完整篇，修炼效率提升至 1.2"
+	t.cultivation_progress_max = 100
+	t.description = "流传于下州乡野的引气入体法门。残卷遗失大半，却被历代抄录者添注了无数私货——反而意外适合根骨驳杂之人入门。"
+	list.append(t)
+	return list
+
+
+# ---------------------------------------------------------------- 物品（4）
+
+func _gen_items() -> Array[Resource]:
+	var list: Array[Resource] = []
+
+	var stone := ItemData.new()
+	stone.id = "item_ling_shi"
+	stone.display_name = "灵石"
+	stone.item_type = ItemData.ItemType.RESOURCE_T2
+	stone.grade = 1
+	stone.stackable = true
+	stone.base_value = 1
+	stone.effects = []
+	stone.description = "下界通用修行通货，蕴存稀薄灵气。"
+	list.append(stone)
+
+	var herb := ItemData.new()
+	herb.id = "item_ling_cao"
+	herb.display_name = "灵草"
+	herb.item_type = ItemData.ItemType.RESOURCE_T2
+	herb.grade = 1
+	herb.stackable = true
+	herb.base_value = 5
+	herb.effects = []
+	herb.description = "青石镇周边常见的药草，是炼制入门丹药的基础材料。"
+	list.append(herb)
+
+	var page := ItemData.new()
+	page.id = "item_gong_fa_can_ye"
+	page.display_name = "引灵诀残页"
+	page.item_type = ItemData.ItemType.TECHNIQUE_PAGE
+	page.grade = 1
+	page.stackable = false
+	page.base_value = 30
+	page.effects = [{"stat": "technique", "op": "learn", "value": "technique_yin_ling_jue", "duration": 0}]
+	page.description = "从黑风岭妖狼巢穴中寻得的残页。纸页泛黄，字迹却极新——像是有人一直在补写。"
+	list.append(page)
+
+	var pill := ItemData.new()
+	pill.id = "item_hui_xue_san"
+	pill.display_name = "回血散"
+	pill.item_type = ItemData.ItemType.PILL
+	pill.grade = 0
+	pill.stackable = true
+	pill.base_value = 8
+	pill.effects = [{"stat": "hp", "op": "add", "value": 30, "duration": 0}]
+	pill.description = "苏芷配制的伤药。入口微苦，药力温和。"
+	list.append(pill)
+	return list
+
+
+# ---------------------------------------------------------------- 角色（6：4 NPC + 2 敌人）
+
+func _gen_characters() -> Array[Resource]:
+	var list: Array[Resource] = []
+	list.append(_make_qin_bo_yuan())
+	list.append(_make_su_zhi())
+	list.append(_make_tie_niu())
+	list.append(_make_a_ying())
+	list.append(_make_ye_lang_yao())
+	list.append(_make_hei_feng_dao_fei())
+	return list
+
+
+func _make_qin_bo_yuan() -> CharacterData:
+	var c := CharacterData.new()
+	c.id = "char_qin_bo_yuan"
+	c.display_name = "秦伯远"
+	c.title = "青石镇镇长"
+	c.character_type = CharacterData.CharacterType.CORE_NPC
+	c.faction_id = "faction_qingshi_town"
+	c.realm_index = 0
+	c.realm_layer = 9
+	c.spirit_roots = {"土": 40}
+	c.dao_heart = {"坚毅": 70, "慈悲": 65, "杀伐": 20, "求知": 30, "自由": 25, "执念": 55}
+	c.base_stats = {"hp": 120, "mp": 20, "atk": 10, "def": 8, "m_atk": 5, "m_def": 6, "speed": 6, "crit": 0.03, "accuracy": 0.90, "evasion": 0.05}
+	c.spirit_stats = {"灵根强度": 40, "神魂": 45, "因果": 50, "气运": 60}
+	c.personality = "沉稳持重，说话慢而稳，遇事先算后果"
+	c.goal = "让青石镇在乱世中存续下去"
+	c.fear = "妖潮再来一次"
+	c.interest = "商路与镇民的安稳"
+	c.secret = "年轻时曾独自进过黑风岭深处，见过不该看的东西，从此再未提起"
+	c.relationships = {"char_su_zhi": 45, "char_tie_niu": 35, "char_a_ying": -10}
+	return c
+
+
+func _make_su_zhi() -> CharacterData:
+	var c := CharacterData.new()
+	c.id = "char_su_zhi"
+	c.display_name = "苏芷"
+	c.title = "回春堂药师"
+	c.character_type = CharacterData.CharacterType.CORE_NPC
+	c.faction_id = "faction_qingshi_town"
+	c.realm_index = 1
+	c.realm_layer = 4
+	c.spirit_roots = {"木": 65, "水": 30}
+	c.dao_heart = {"坚毅": 50, "慈悲": 75, "杀伐": 10, "求知": 70, "自由": 35, "执念": 45}
+	c.base_stats = {"hp": 90, "mp": 60, "atk": 6, "def": 5, "m_atk": 14, "m_def": 10, "speed": 7, "crit": 0.05, "accuracy": 0.88, "evasion": 0.08}
+	c.spirit_stats = {"灵根强度": 65, "神魂": 55, "因果": 45, "气运": 50}
+	c.personality = "温和好奇，见了没见过的药草就走不动路"
+	c.goal = "编完《青石百草图鉴》"
+	c.fear = "关键灵草绝种"
+	c.interest = "稀有药材与失传丹方"
+	c.secret = "她认得冥道功法的笔迹——那本该绝迹百年"
+	c.relationships = {"char_qin_bo_yuan": 40, "char_tie_niu": 20, "char_a_ying": 5}
+	return c
+
+
+func _make_tie_niu() -> CharacterData:
+	var c := CharacterData.new()
+	c.id = "char_tie_niu"
+	c.display_name = "铁牛"
+	c.title = "镇口铁匠"
+	c.character_type = CharacterData.CharacterType.CORE_NPC
+	c.faction_id = "faction_qingshi_town"
+	c.realm_index = 0
+	c.realm_layer = 7
+	c.spirit_roots = {"金": 55, "火": 35}
+	c.dao_heart = {"坚毅": 75, "慈悲": 40, "杀伐": 45, "求知": 20, "自由": 30, "执念": 50}
+	c.base_stats = {"hp": 150, "mp": 10, "atk": 16, "def": 12, "m_atk": 2, "m_def": 4, "speed": 6, "crit": 0.05, "accuracy": 0.85, "evasion": 0.04}
+	c.spirit_stats = {"灵根强度": 55, "神魂": 40, "因果": 40, "气运": 45}
+	c.personality = "豪爽直接，嗓门大，三句话不离打铁"
+	c.goal = "打出一把能斩妖的刀"
+	c.fear = "手艺失传，炉火熄灭"
+	c.interest = "精铁、妖骨与好炭"
+	c.secret = "他偷偷收着一块从妖狼尸体上取下的黑铁——那不是凡铁"
+	c.relationships = {"char_qin_bo_yuan": 35, "char_su_zhi": 20}
+	return c
+
+
+func _make_a_ying() -> CharacterData:
+	var c := CharacterData.new()
+	c.id = "char_a_ying"
+	c.display_name = "阿萤"
+	c.title = "外地来的少女"
+	c.character_type = CharacterData.CharacterType.CORE_NPC
+	c.faction_id = ""
+	c.realm_index = 1
+	c.realm_layer = 1
+	c.spirit_roots = {"冥": 70}
+	c.dao_heart = {"坚毅": 40, "慈悲": 30, "杀伐": 15, "求知": 85, "自由": 60, "执念": 90}
+	c.base_stats = {"hp": 70, "mp": 80, "atk": 4, "def": 4, "m_atk": 18, "m_def": 14, "speed": 10, "crit": 0.08, "accuracy": 0.92, "evasion": 0.15}
+	c.spirit_stats = {"灵根强度": 70, "神魂": 90, "因果": 85, "气运": 30}
+	c.personality = "疏离寡言，语出惊人，眼睛总像在看别处"
+	c.goal = "找到'记得死者的人'"
+	c.fear = "被遗忘"
+	c.interest = "会说真话的人"
+	c.secret = "她反复梦见青石镇地底的一道门"
+	c.relationships = {}
+	return c
+
+
+func _make_ye_lang_yao() -> CharacterData:
+	var c := CharacterData.new()
+	c.id = "char_ye_lang_yao"
+	c.display_name = "野狼妖"
+	c.title = "黑风岭妖兽"
+	c.character_type = CharacterData.CharacterType.ENEMY
+	c.faction_id = ""
+	c.realm_index = 0
+	c.realm_layer = 3
+	c.spirit_roots = {"风": 50}
+	c.dao_heart = {}
+	c.base_stats = {"hp": 85, "mp": 0, "atk": 13, "def": 6, "m_atk": 0, "m_def": 3, "speed": 14, "crit": 0.08, "accuracy": 0.85, "evasion": 0.18}
+	c.spirit_stats = {"灵根强度": 50, "神魂": 20, "因果": 0, "气运": 10}
+	c.personality = "凶戾嗜血"
+	c.goal = "捕猎"
+	c.fear = "更强的狼王"
+	c.interest = "血肉"
+	c.secret = "眼中偶尔闪过不属于野兽的幽绿光芒"
+	c.relationships = {}
+	return c
+
+
+func _make_hei_feng_dao_fei() -> CharacterData:
+	var c := CharacterData.new()
+	c.id = "char_hei_feng_dao_fei"
+	c.display_name = "黑风盗匪"
+	c.title = "黑风岭流匪"
+	c.character_type = CharacterData.CharacterType.ENEMY
+	c.faction_id = "faction_hei_feng_dao"
+	c.realm_index = 0
+	c.realm_layer = 5
+	c.spirit_roots = {"金": 45}
+	c.dao_heart = {"坚毅": 30, "慈悲": 5, "杀伐": 60, "求知": 15, "自由": 55, "执念": 35}
+	c.base_stats = {"hp": 110, "mp": 15, "atk": 15, "def": 9, "m_atk": 3, "m_def": 5, "speed": 9, "crit": 0.06, "accuracy": 0.86, "evasion": 0.10}
+	c.spirit_stats = {"灵根强度": 45, "神魂": 35, "因果": 30, "气运": 25}
+	c.personality = "贪婪狠辣"
+	c.goal = "劫够灵石后金盆洗手"
+	c.fear = "官府缉拿与岭中妖狼"
+	c.interest = "财物"
+	c.secret = "他们劫的不只是货——上头有人专门收妖兽尸体"
+	c.relationships = {}
+	return c
+
+
+# ---------------------------------------------------------------- 任务（1）
+
+func _gen_quests() -> Array[Resource]:
+	var list: Array[Resource] = []
+
+	var q := QuestData.new()
+	q.id = "quest_diao_cha_hei_feng_ling"
+	q.display_name = "调查黑风岭失踪事件"
+	q.description = "青石镇接连有人在黑风岭失踪。镇长秦伯远请你进入黑风岭查明真相，击退作乱的妖兽，并回报调查结果。"
+	q.giver = "char_qin_bo_yuan"
+	q.requirements = []
+	q.objectives = [
+		{"type": "到达", "target_id": "region_hei_feng_ling", "count": 1, "params": {}},
+		{"type": "战斗", "target_id": "char_ye_lang_yao", "count": 2, "params": {}},
+		{"type": "对话", "target_id": "char_qin_bo_yuan", "count": 1, "params": {"topic": "回报调查结果"}},
+	]
+	q.rewards = [
+		{"target": "player", "key": "item:item_ling_shi", "op": "add", "value": 20},
+		{"target": "player", "key": "item:item_hui_xue_san", "op": "add", "value": 2},
+		{"target": "faction:faction_qingshi_town", "key": "relation", "op": "add", "value": 10},
+	]
+	q.failure_conditions = []
+	q.consequences = [
+		{"target": "faction:faction_qingshi_town", "key": "relation", "op": "add", "value": -5},
+	]
+	q.next_quests = []
+	list.append(q)
+	return list
+
+
+# ---------------------------------------------------------------- 事件（1）
+
+func _gen_events() -> Array[Resource]:
+	var list: Array[Resource] = []
+
+	var e := EventData.new()
+	e.id = "event_shao_nv_zhi_wen"
+	e.title = "少女之问"
+	e.description = "夜色渐深，阿萤忽然转头问你：「你相信死者会记得生前吗？」她的眼睛在月光下亮得不像话。"
+	e.priority = 10
+	e.cooldown_days = 0  # 一次性剧情事件：已触发标记由阶段7事件管理器保证
+	e.trigger = EventData.Trigger.STATE_CONDITION
+	e.conditions = [
+		{"key": "player.realm_layer", "op": ">=", "value": 2},
+	]
+	e.choices = [
+		{
+			"text": "「相信。逝者只是换了一种方式活着。」",
+			"effects": [{"target": "player", "key": "dao_heart.执念", "op": "add", "value": 5}],
+			"delayed_effects": [{"target": "char:char_a_ying", "key": "relationship", "op": "add", "value": 10}],
+			"hidden_effects": [],
+			"requirements": [],
+			"hint": "",
+		},
+		{
+			"text": "「不信。人死如灯灭。」",
+			"effects": [{"target": "player", "key": "dao_heart.杀伐", "op": "add", "value": 5}],
+			"delayed_effects": [{"target": "char:char_a_ying", "key": "relationship", "op": "add", "value": -5}],
+			"hidden_effects": [],
+			"requirements": [],
+			"hint": "",
+		},
+		{
+			"text": "「我不知道……但我想知道。」",
+			"effects": [{"target": "player", "key": "dao_heart.求知", "op": "add", "value": 5}],
+			"delayed_effects": [{"target": "char:char_a_ying", "key": "relationship", "op": "add", "value": 5}],
+			"hidden_effects": [{"target": "world", "key": "flag:a_ying_answer", "op": "set", "value": "curious"}],
+			"requirements": [],
+			"hint": "",
+		},
+	]
+	e.effects = []
+	e.involved_npcs = ["char_a_ying"]
+	e.involved_factions = []
+	list.append(e)
+	return list

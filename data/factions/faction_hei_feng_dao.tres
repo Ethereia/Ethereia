@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="FactionData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1_3nuyv"]
+
+[resource]
+script = ExtResource("1_3nuyv")
+id = "faction_hei_feng_dao"
+display_name = "黑风盗"
+faction_type = 3
+ideology = "流寇结社，弱肉强食，交钱放行"
+relations = {
+"faction_qingshi_town": {
+"fear": 10,
+"relation_score": -60,
+"trade": 20,
+"trust": 0,
+"war_state": "敌对"
+}
+}
+territory = Array[String](["region_hei_feng_ling"])
+ai_profile = {
+"aggression": 80,
+"expansion": 30,
+"trade_preference": 10
+}
+description = "盘踞黑风岭的流匪，近来行踪诡秘，劫掠频率反常地高。"

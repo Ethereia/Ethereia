@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="TechniqueData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/technique_data.gd" id="1_4rar1"]
+
+[resource]
+script = ExtResource("1_4rar1")
+id = "technique_yin_ling_jue"
+display_name = "引灵诀"
+grade = 1
+attribute_tendency = {
+"m_atk": 0.1,
+"m_def": 0.1
+}
+cultivation_efficiency = 1.05
+breakthrough_modifiers = {
+"spirit_quality": 2
+}
+side_effects = Array[String](["灵力运转初见滞涩：修炼首月效率 -10%"])
+hidden_trait = "残篇互补"
+hidden_trait_condition = "集齐三张《引灵诀》残页（item_gong_fa_can_ye）拼合为完整篇，修炼效率提升至 1.2"
+description = "流传于下州乡野的引气入体法门。残卷遗失大半，却被历代抄录者添注了无数私货——反而意外适合根骨驳杂之人入门。"

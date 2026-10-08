@@ -1,0 +1,59 @@
+[gd_resource type="Resource" script_class="RegionData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/region_data.gd" id="1_qanmk"]
+
+[resource]
+script = ExtResource("1_qanmk")
+id = "region_qingshi_town"
+display_name = "青石镇"
+terrain = "平原"
+level_range = Vector2i(1, 5)
+tags = Array[String](["城镇", "安全区", "农耕"])
+locations = Array[Dictionary]([{
+"encounters": ["char_qin_bo_yuan"],
+"factions": ["faction_qingshi_town"],
+"id": "loc_zhen_zhang_fu",
+"level_range": Vector2i(1, 5),
+"location_type": "官署",
+"position": Vector2i(4, 3),
+"quest_hooks": ["quest_diao_cha_hei_feng_ling"],
+"resources": {},
+"tags": ["建筑"],
+"terrain": "平原"
+}, {
+"encounters": ["char_su_zhi"],
+"factions": ["faction_qingshi_town"],
+"id": "loc_hui_chun_tang",
+"level_range": Vector2i(1, 5),
+"location_type": "店铺",
+"position": Vector2i(7, 4),
+"quest_hooks": [],
+"resources": {
+"item_hui_xue_san": 2
+},
+"tags": ["药铺"],
+"terrain": "平原"
+}, {
+"encounters": ["char_tie_niu"],
+"factions": ["faction_qingshi_town"],
+"id": "loc_tie_jiang_pu",
+"level_range": Vector2i(1, 5),
+"location_type": "店铺",
+"position": Vector2i(5, 6),
+"quest_hooks": [],
+"resources": {},
+"tags": ["铁匠铺"],
+"terrain": "平原"
+}, {
+"encounters": ["char_a_ying"],
+"factions": ["faction_qingshi_town"],
+"id": "loc_zhen_kou",
+"level_range": Vector2i(1, 5),
+"location_type": "入口",
+"position": Vector2i(2, 8),
+"quest_hooks": [],
+"resources": {},
+"tags": ["镇口"],
+"terrain": "平原"
+}])
+factions_present = Array[String](["faction_qingshi_town"])

@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/character_data.gd" id="1_2dhj2"]
+
+[resource]
+script = ExtResource("1_2dhj2")
+id = "char_tie_niu"
+display_name = "铁牛"
+title = "镇口铁匠"
+character_type = 1
+faction_id = "faction_qingshi_town"
+realm_layer = 7
+spirit_roots = {
+"火": 35,
+"金": 55
+}
+dao_heart = {
+"坚毅": 75,
+"慈悲": 40,
+"执念": 50,
+"杀伐": 45,
+"求知": 20,
+"自由": 30
+}
+base_stats = {
+"accuracy": 0.85,
+"atk": 16,
+"crit": 0.05,
+"def": 12,
+"evasion": 0.04,
+"hp": 150,
+"m_atk": 2,
+"m_def": 4,
+"mp": 10,
+"speed": 6
+}
+spirit_stats = {
+"因果": 40,
+"气运": 45,
+"灵根强度": 55,
+"神魂": 40
+}
+personality = "豪爽直接，嗓门大，三句话不离打铁"
+goal = "打出一把能斩妖的刀"
+fear = "手艺失传，炉火熄灭"
+interest = "精铁、妖骨与好炭"
+secret = "他偷偷收着一块从妖狼尸体上取下的黑铁——那不是凡铁"
+relationships = {
+"char_qin_bo_yuan": 35,
+"char_su_zhi": 20
+}

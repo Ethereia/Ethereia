@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_l7bru"]
+
+[resource]
+script = ExtResource("1_l7bru")
+id = "item_ling_shi"
+display_name = "灵石"
+item_type = 1
+grade = 1
+description = "下界通用修行通货，蕴存稀薄灵气。"

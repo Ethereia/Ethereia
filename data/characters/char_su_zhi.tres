@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/character_data.gd" id="1_lnom6"]
+
+[resource]
+script = ExtResource("1_lnom6")
+id = "char_su_zhi"
+display_name = "苏芷"
+title = "回春堂药师"
+character_type = 1
+faction_id = "faction_qingshi_town"
+realm_index = 1
+realm_layer = 4
+spirit_roots = {
+"木": 65,
+"水": 30
+}
+dao_heart = {
+"坚毅": 50,
+"慈悲": 75,
+"执念": 45,
+"杀伐": 10,
+"求知": 70,
+"自由": 35
+}
+base_stats = {
+"accuracy": 0.88,
+"atk": 6,
+"crit": 0.05,
+"def": 5,
+"evasion": 0.08,
+"hp": 90,
+"m_atk": 14,
+"m_def": 10,
+"mp": 60,
+"speed": 7
+}
+spirit_stats = {
+"因果": 45,
+"气运": 50,
+"灵根强度": 65,
+"神魂": 55
+}
+personality = "温和好奇，见了没见过的药草就走不动路"
+goal = "编完《青石百草图鉴》"
+fear = "关键灵草绝种"
+interest = "稀有药材与失传丹方"
+secret = "她认得冥道功法的笔迹——那本该绝迹百年"
+relationships = {
+"char_a_ying": 5,
+"char_qin_bo_yuan": 40,
+"char_tie_niu": 20
+}

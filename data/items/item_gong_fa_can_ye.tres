@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_c1i8d"]
+
+[resource]
+script = ExtResource("1_c1i8d")
+id = "item_gong_fa_can_ye"
+display_name = "引灵诀残页"
+item_type = 8
+grade = 1
+stackable = false
+base_value = 30
+effects = Array[Dictionary]([{
+"duration": 0,
+"op": "learn",
+"stat": "technique",
+"value": "technique_yin_ling_jue"
+}])
+description = "从黑风岭妖狼巢穴中寻得的残页。纸页泛黄，字迹却极新——像是有人一直在补写。"

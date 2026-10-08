@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_li1gi"]
+
+[resource]
+script = ExtResource("1_li1gi")
+id = "item_hui_xue_san"
+display_name = "回血散"
+item_type = 4
+base_value = 8
+effects = Array[Dictionary]([{
+"duration": 0,
+"op": "add",
+"stat": "hp",
+"value": 30
+}])
+description = "苏芷配制的伤药。入口微苦，药力温和。"

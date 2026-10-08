@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/character_data.gd" id="1_k8m1l"]
+
+[resource]
+script = ExtResource("1_k8m1l")
+id = "char_qin_bo_yuan"
+display_name = "秦伯远"
+title = "青石镇镇长"
+character_type = 1
+faction_id = "faction_qingshi_town"
+realm_layer = 9
+spirit_roots = {
+"土": 40
+}
+dao_heart = {
+"坚毅": 70,
+"慈悲": 65,
+"执念": 55,
+"杀伐": 20,
+"求知": 30,
+"自由": 25
+}
+base_stats = {
+"accuracy": 0.9,
+"atk": 10,
+"crit": 0.03,
+"def": 8,
+"evasion": 0.05,
+"hp": 120,
+"m_atk": 5,
+"m_def": 6,
+"mp": 20,
+"speed": 6
+}
+spirit_stats = {
+"因果": 50,
+"气运": 60,
+"灵根强度": 40,
+"神魂": 45
+}
+personality = "沉稳持重，说话慢而稳，遇事先算后果"
+goal = "让青石镇在乱世中存续下去"
+fear = "妖潮再来一次"
+interest = "商路与镇民的安稳"
+secret = "年轻时曾独自进过黑风岭深处，见过不该看的东西，从此再未提起"
+relationships = {
+"char_a_ying": -10,
+"char_su_zhi": 45,
+"char_tie_niu": 35
+}

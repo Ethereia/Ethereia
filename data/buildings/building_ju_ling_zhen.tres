@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="BuildingData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/building_data.gd" id="1_p4dev"]
+
+[resource]
+script = ExtResource("1_p4dev")
+id = "building_ju_ling_zhen"
+display_name = "聚灵阵"
+upgrade_cost = Array[Dictionary]([{
+"item_ling_cao": 10,
+"item_ling_shi": 50
+}, {
+"item_ling_cao": 25,
+"item_ling_shi": 120
+}, {
+"item_ling_cao": 60,
+"item_ling_shi": 300
+}, {
+"item_ling_cao": 150,
+"item_ling_shi": 800
+}, {
+"item_ling_cao": 400,
+"item_ling_shi": 2000
+}])
+upgrade_time_days = Array[int]([1, 2, 4, 7, 12])
+prestige_requirement = Array[int]([0, 0, 10, 30, 60])
+upkeep = {
+"item_ling_shi": 1
+}
+unlock_effects = Array[Dictionary]([{
+"effect": "cultivation_env_bonus",
+"level": 1
+}, {
+"effect": "breakthrough_env_factor",
+"level": 3
+}, {
+"effect": "extra_disciple_slot",
+"level": 5
+}])
+description = "汇聚天地灵气的阵法基座，是临时驻地的第一块基石。阵内修炼事半功倍，高阶阵盘还能辅助突破。"

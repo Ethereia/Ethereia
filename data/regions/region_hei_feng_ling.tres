@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="RegionData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/region_data.gd" id="1_660ho"]
+
+[resource]
+script = ExtResource("1_660ho")
+id = "region_hei_feng_ling"
+display_name = "黑风岭"
+terrain = "山地"
+level_range = Vector2i(2, 6)
+tags = Array[String](["野外", "妖兽", "失踪传闻"])
+danger_level = 45
+resources = {
+"item_ling_cao": 3
+}
+locations = Array[Dictionary]([{
+"encounters": ["char_ye_lang_yao", "char_hei_feng_dao_fei"],
+"factions": ["faction_hei_feng_dao"],
+"id": "loc_hei_feng_xiao_jing",
+"level_range": Vector2i(2, 4),
+"location_type": "道路",
+"position": Vector2i(3, 2),
+"quest_hooks": [],
+"resources": {
+"item_ling_cao": 1
+},
+"tags": ["山道"],
+"terrain": "山地"
+}, {
+"encounters": ["char_ye_lang_yao"],
+"factions": [],
+"id": "loc_yao_lang_chao_xue",
+"level_range": Vector2i(3, 6),
+"location_type": "巢穴",
+"position": Vector2i(8, 6),
+"quest_hooks": ["quest_diao_cha_hei_feng_ling"],
+"resources": {},
+"tags": ["妖兽"],
+"terrain": "山地"
+}, {
+"encounters": ["char_hei_feng_dao_fei"],
+"factions": ["faction_hei_feng_dao"],
+"id": "loc_fei_qi_kuang_keng",
+"level_range": Vector2i(2, 5),
+"location_type": "遗迹",
+"position": Vector2i(6, 3),
+"quest_hooks": [],
+"resources": {},
+"tags": ["矿坑", "废弃"],
+"terrain": "山地"
+}])
+factions_present = Array[String](["faction_hei_feng_dao"])

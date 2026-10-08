@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/character_data.gd" id="1_gikq1"]
+
+[resource]
+script = ExtResource("1_gikq1")
+id = "char_ye_lang_yao"
+display_name = "野狼妖"
+title = "黑风岭妖兽"
+character_type = 3
+realm_layer = 3
+spirit_roots = {
+"风": 50
+}
+base_stats = {
+"accuracy": 0.85,
+"atk": 13,
+"crit": 0.08,
+"def": 6,
+"evasion": 0.18,
+"hp": 85,
+"m_atk": 0,
+"m_def": 3,
+"mp": 0,
+"speed": 14
+}
+spirit_stats = {
+"因果": 0,
+"气运": 10,
+"灵根强度": 50,
+"神魂": 20
+}
+personality = "凶戾嗜血"
+goal = "捕猎"
+fear = "更强的狼王"
+interest = "血肉"
+secret = "眼中偶尔闪过不属于野兽的幽绿光芒"
