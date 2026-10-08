@@ -1,0 +1,26 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Godot exported build artifacts
+/build/
+export/
+*.pck
+*.zip
+
+# Godot export credentials (contains signing keys/secrets)
+export_credentials.cfg
+
+# Godot override file (local-only settings)
+override.cfg
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Addons
+addons/
+
+# Other
+.trae/
+docs/
