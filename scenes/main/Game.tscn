@@ -1,9 +1,28 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/core/game.gd" id="1_game"]
+[ext_resource type="Script" path="res://scripts/world/world_manager.gd" id="2_world"]
+[ext_resource type="PackedScene" path="res://scenes/characters/Player.tscn" id="3_player"]
+[ext_resource type="Script" path="res://scripts/gameplay/inventory_manager.gd" id="4_inventory"]
+[ext_resource type="Script" path="res://scripts/quest/quest_manager.gd" id="5_quest"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="6_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/DialogueUI.tscn" id="7_dialogue"]
+[ext_resource type="PackedScene" path="res://scenes/ui/InventoryPanel.tscn" id="8_inventory_panel"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_game")
+
+[node name="World" type="Node2D" parent="."]
+script = ExtResource("2_world")
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+position = Vector2(200, 300)
+
+[node name="InventoryManager" type="Node" parent="."]
+script = ExtResource("4_inventory")
+
+[node name="QuestManager" type="Node" parent="."]
+script = ExtResource("5_quest")
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
@@ -19,7 +38,7 @@ theme_override_constants/separation = 8
 
 [node name="Title" type="Label" parent="UILayer/DebugPanel/VBox"]
 layout_mode = 2
-text = "阶段0 · 技术骨架调试"
+text = "阶段3 · 世界调试"
 
 [node name="TimeLabel" type="Label" parent="UILayer/DebugPanel/VBox"]
 layout_mode = 2
@@ -45,3 +64,9 @@ text = "Esc 返回主菜单"
 [node name="MenuButton" type="Button" parent="UILayer/DebugPanel/VBox"]
 layout_mode = 2
 text = "返回主菜单"
+
+[node name="HUD" parent="UILayer" instance=ExtResource("6_hud")]
+
+[node name="DialogueUI" parent="UILayer" instance=ExtResource("7_dialogue")]
+
+[node name="InventoryPanel" parent="UILayer" instance=ExtResource("8_inventory_panel")]

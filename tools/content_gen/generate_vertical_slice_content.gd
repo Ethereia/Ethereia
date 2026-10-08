@@ -15,10 +15,12 @@ func run_all() -> Dictionary:
 	all.append_array(_gen_characters())
 	all.append_array(_gen_quests())
 	all.append_array(_gen_events())
+	all.append_array(_gen_dialogues())
 
 	var report := {"saved": [], "reload_errors": []}
 	for res: Resource in all:
 		var path := _path_for(res.id)
+		DirAccess.make_dir_recursive_absolute(path.get_base_dir())  # 表目录缺失时兜底创建
 		var err := ResourceSaver.save(res, path)
 		report["saved"].append({"id": res.id, "path": path, "err": err})
 	# 回读校验：文件存在且能加载为正确类型
@@ -47,6 +49,8 @@ func _path_for(id: String) -> String:
 		table = "quests"
 	elif id.begins_with("event_"):
 		table = "events"
+	elif id.begins_with("dlg_"):
+		table = "dialogues"
 	return "res://data/%s/%s.tres" % [table, id]
 
 
@@ -481,3 +485,78 @@ func _gen_events() -> Array[Resource]:
 	e.involved_factions = []
 	list.append(e)
 	return list
+
+
+# ---------------------------------------------------------------- 对话（4，阶段3）
+## 对话 id 约定 dlg_<char_id>；节点结构见 DialogueData Schema（doc 29 §2.10）
+## choices.effects 走统一效果格式；接取/回报任务对应 op accept/report
+
+func _gen_dialogues() -> Array[Resource]:
+	var list: Array[Resource] = []
+	list.append(_make_dlg_qin_bo_yuan())
+	list.append(_make_dlg_su_zhi())
+	list.append(_make_dlg_tie_niu())
+	list.append(_make_dlg_a_ying())
+	return list
+
+
+func _make_dlg_qin_bo_yuan() -> DialogueData:
+	var d := DialogueData.new()
+	d.id = "dlg_char_qin_bo_yuan"
+	d.entry_node_id = "n0"
+	d.nodes = [
+		{"node_id": "n0", "speaker_id": "char_qin_bo_yuan", "text": "接连有人在黑风岭失踪，镇民人心惶惶……你既是修士，可愿帮老夫一探？", "emotion": "忧虑", "conditions": {}, "choices": [
+			{"text": "愿效劳。", "effects": [{"target": "quest", "key": "quest_diao_cha_hei_feng_ling", "op": "accept"}], "next": "n1"},
+			{"text": "我已查明真相。", "effects": [{"target": "quest", "key": "quest_diao_cha_hei_feng_ling", "op": "report"}], "next": "n2"},
+			{"text": "容我考虑。", "effects": [], "next": "n3"},
+		], "next": ""},
+		{"node_id": "n1", "speaker_id": "char_qin_bo_yuan", "text": "好！老夫代全镇谢过。岭中妖兽凶戾，务必小心。", "emotion": "郑重", "conditions": {}, "choices": [], "next": ""},
+		{"node_id": "n2", "speaker_id": "char_qin_bo_yuan", "text": "……竟有此事？妖狼异常、地下冥气……老夫明白了。这点谢礼请务必收下。", "emotion": "释然", "conditions": {}, "choices": [], "next": ""},
+		{"node_id": "n3", "speaker_id": "char_qin_bo_yuan", "text": "老夫等你的消息。", "emotion": "平静", "conditions": {}, "choices": [], "next": ""},
+	]
+	return d
+
+
+func _make_dlg_su_zhi() -> DialogueData:
+	var d := DialogueData.new()
+	d.id = "dlg_char_su_zhi"
+	d.entry_node_id = "n0"
+	d.nodes = [
+		{"node_id": "n0", "speaker_id": "char_su_zhi", "text": "欢迎光临回春堂。最近灵草收成不好，我正想再去岭里采些……", "emotion": "温和", "conditions": {}, "choices": [
+			{"text": "需要帮忙吗？", "effects": [], "next": "n1"},
+			{"text": "告辞。", "effects": [], "next": "n2"},
+		], "next": ""},
+		{"node_id": "n1", "speaker_id": "char_su_zhi", "text": "你有心啦。对了——若在岭里见到奇怪的残页，带来给我看看。我最近在研究一些……很古老的笔迹。", "emotion": "好奇", "conditions": {}, "choices": [], "next": ""},
+		{"node_id": "n2", "speaker_id": "char_su_zhi", "text": "慢走。", "emotion": "温和", "conditions": {}, "choices": [], "next": ""},
+	]
+	return d
+
+
+func _make_dlg_tie_niu() -> DialogueData:
+	var d := DialogueData.new()
+	d.id = "dlg_char_tie_niu"
+	d.entry_node_id = "n0"
+	d.nodes = [
+		{"node_id": "n0", "speaker_id": "char_tie_niu", "text": "嘿，新面孔！想打铁还是听故事？都行——反正炉子一刻不能停！", "emotion": "爽朗", "conditions": {}, "choices": [
+			{"text": "聊聊黑风岭。", "effects": [], "next": "n1"},
+			{"text": "告辞。", "effects": [], "next": "n2"},
+		], "next": ""},
+		{"node_id": "n1", "speaker_id": "char_tie_niu", "text": "那帮流寇最近邪门得很！前几日我在岭边捡到块黑铁——嗨，说不上来，反正不是凡铁。你要去岭里，帮我盯着点那帮狼！", "emotion": "激动", "conditions": {}, "choices": [], "next": ""},
+		{"node_id": "n2", "speaker_id": "char_tie_niu", "text": "走好嘞！", "emotion": "爽朗", "conditions": {}, "choices": [], "next": ""},
+	]
+	return d
+
+
+func _make_dlg_a_ying() -> DialogueData:
+	var d := DialogueData.new()
+	d.id = "dlg_char_a_ying"
+	d.entry_node_id = "n0"
+	d.nodes = [
+		{"node_id": "n0", "speaker_id": "char_a_ying", "text": "……你也是来问「为什么」的吗？", "emotion": "疏离", "conditions": {}, "choices": [
+			{"text": "你相信死者会记得生前吗？", "effects": [], "next": "n1"},
+			{"text": "告辞。", "effects": [], "next": "n2"},
+		], "next": ""},
+		{"node_id": "n1", "speaker_id": "char_a_ying", "text": "……问得好。也许记得的人不是死者——而是还在看着的我们。", "emotion": "认真", "conditions": {}, "choices": [], "next": ""},
+		{"node_id": "n2", "speaker_id": "char_a_ying", "text": "嗯。", "emotion": "疏离", "conditions": {}, "choices": [], "next": ""},
+	]
+	return d

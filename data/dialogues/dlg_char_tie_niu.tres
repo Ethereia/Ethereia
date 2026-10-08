@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1_rdw2s"]
+
+[resource]
+script = ExtResource("1_rdw2s")
+id = "dlg_char_tie_niu"
+nodes = Array[Dictionary]([{
+"choices": [{
+"effects": [],
+"next": "n1",
+"text": "聊聊黑风岭。"
+}, {
+"effects": [],
+"next": "n2",
+"text": "告辞。"
+}],
+"conditions": {},
+"emotion": "爽朗",
+"next": "",
+"node_id": "n0",
+"speaker_id": "char_tie_niu",
+"text": "嘿，新面孔！想打铁还是听故事？都行——反正炉子一刻不能停！"
+}, {
+"choices": [],
+"conditions": {},
+"emotion": "激动",
+"next": "",
+"node_id": "n1",
+"speaker_id": "char_tie_niu",
+"text": "那帮流寇最近邪门得很！前几日我在岭边捡到块黑铁——嗨，说不上来，反正不是凡铁。你要去岭里，帮我盯着点那帮狼！"
+}, {
+"choices": [],
+"conditions": {},
+"emotion": "爽朗",
+"next": "",
+"node_id": "n2",
+"speaker_id": "char_tie_niu",
+"text": "走好嘞！"
+}])
+entry_node_id = "n0"

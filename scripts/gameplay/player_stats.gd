@@ -73,3 +73,10 @@ func spend_mp(amount: float) -> bool:
 func restore_mp(amount: float) -> void:
 	current_mp = minf(max_mp, current_mp + maxf(0.0, amount))
 	EventBus.player_stats_changed.emit()
+
+
+## 复活（阶段3占位：按比例回血 + 清除死亡标记；阶段5 修仙死亡惩罚另做）
+func revive(health_ratio: float = 0.5) -> void:
+	_dead = false
+	current_hp = maxf(1.0, max_hp * clampf(health_ratio, 0.0, 1.0))
+	EventBus.player_stats_changed.emit()

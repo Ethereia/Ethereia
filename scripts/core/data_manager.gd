@@ -5,7 +5,7 @@ extends Node
 const DATA_ROOT := "res://data/"
 const TABLES: Array[String] = [
 	"characters", "items", "skills", "techniques", "buildings",
-	"quests", "events", "factions", "regions",
+	"quests", "events", "factions", "regions", "dialogues",
 ]
 
 ## _cache[table][id] -> Dictionary(JSON) 或 Resource(.tres)

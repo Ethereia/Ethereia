@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/gameplay/player.gd" id="1_player"]
 
@@ -8,7 +8,12 @@ radius = 16.0
 [sub_resource type="CircleShape2D" id="attack_shape"]
 radius = 120.0
 
+[sub_resource type="CircleShape2D" id="interact_shape"]
+radius = 56.0
+
 [node name="Player" type="CharacterBody2D" groups=["player", "savable"]]
+collision_layer = 2
+collision_mask = 1
 script = ExtResource("1_player")
 
 [node name="Body" type="Polygon2D" parent="."]
@@ -22,9 +27,16 @@ shape = SubResource("body_shape")
 position_smoothing_enabled = true
 
 [node name="AttackRange" type="Area2D" parent="."]
+collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackRange"]
 shape = SubResource("attack_shape")
+
+[node name="InteractRange" type="Area2D" parent="."]
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractRange"]
+shape = SubResource("interact_shape")
 
 [node name="AttackTimer" type="Timer" parent="."]
 wait_time = 1.0

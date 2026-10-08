@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1_8ykmn"]
+
+[resource]
+script = ExtResource("1_8ykmn")
+id = "dlg_char_qin_bo_yuan"
+nodes = Array[Dictionary]([{
+"choices": [{
+"effects": [{
+"key": "quest_diao_cha_hei_feng_ling",
+"op": "accept",
+"target": "quest"
+}],
+"next": "n1",
+"text": "愿效劳。"
+}, {
+"effects": [{
+"key": "quest_diao_cha_hei_feng_ling",
+"op": "report",
+"target": "quest"
+}],
+"next": "n2",
+"text": "我已查明真相。"
+}, {
+"effects": [],
+"next": "n3",
+"text": "容我考虑。"
+}],
+"conditions": {},
+"emotion": "忧虑",
+"next": "",
+"node_id": "n0",
+"speaker_id": "char_qin_bo_yuan",
+"text": "接连有人在黑风岭失踪，镇民人心惶惶……你既是修士，可愿帮老夫一探？"
+}, {
+"choices": [],
+"conditions": {},
+"emotion": "郑重",
+"next": "",
+"node_id": "n1",
+"speaker_id": "char_qin_bo_yuan",
+"text": "好！老夫代全镇谢过。岭中妖兽凶戾，务必小心。"
+}, {
+"choices": [],
+"conditions": {},
+"emotion": "释然",
+"next": "",
+"node_id": "n2",
+"speaker_id": "char_qin_bo_yuan",
+"text": "……竟有此事？妖狼异常、地下冥气……老夫明白了。这点谢礼请务必收下。"
+}, {
+"choices": [],
+"conditions": {},
+"emotion": "平静",
+"next": "",
+"node_id": "n3",
+"speaker_id": "char_qin_bo_yuan",
+"text": "老夫等你的消息。"
+}])
+entry_node_id = "n0"

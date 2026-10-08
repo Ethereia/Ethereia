@@ -17,6 +17,10 @@ func _ready() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause_toggle"):
+		# 对话已暂停世界：此时空格不切换暂停（防对话中误解除导致敌人恢复活动）
+		var dialogs := get_tree().get_nodes_in_group("dialogue_ui")
+		if dialogs.size() > 0 and bool(dialogs[0].get("is_open")):
+			return
 		get_tree().paused = not get_tree().paused
 		_paused_label.visible = get_tree().paused
 

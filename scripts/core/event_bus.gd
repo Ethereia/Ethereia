@@ -25,4 +25,19 @@ signal realm_breakthrough_failed(new_realm_index: int)
 signal world_state_changed(key: String, value: Variant)
 signal faction_relation_changed(faction_a: String, faction_b: String, score: int)
 
+# --- 世界与生态（阶段3） ---
+signal region_entered(region_id: String)
+signal enemy_died(enemy_id: String, region_id: String)
+signal item_added(item_id: String, count: int)
+signal item_removed(item_id: String, count: int)
+
+# --- 交互与对话（阶段3） ---
+signal npc_interacted(npc_id: String, dialogue_id: String)
+signal dialogue_finished(npc_id: String)
+
+# --- 任务（阶段7完善，阶段3最小推进） ---
+signal quest_accepted(quest_id: String)
+signal quest_completed(quest_id: String)
+signal quest_progress_changed(quest_id: String)
+
 @warning_ignore_restore("unused_signal")

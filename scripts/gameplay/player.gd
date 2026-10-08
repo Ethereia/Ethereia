@@ -9,6 +9,7 @@ var stats := PlayerStats.new()
 
 @onready var _attack_range: Area2D = $AttackRange
 @onready var _attack_timer: Timer = $AttackTimer
+@onready var _interact_range: Area2D = $InteractRange
 
 
 func _ready() -> void:
@@ -28,6 +29,26 @@ func _physics_process(_delta: float) -> void:
 	var dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	velocity = dir * CultivationUtils.move_speed(stats.base_speed)
 	move_and_slide()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("interact"):
+		_try_interact()
+
+
+## E 交互：取交互范围内最近的可交互体（Npc/ResourceNode 统一 interact() 接口）
+func _try_interact() -> void:
+	var nearest: Node2D = null
+	var nearest_dist := INF
+	for body in _interact_range.get_overlapping_bodies():
+		if body == self or not body.has_method("interact"):
+			continue
+		var dist := global_position.distance_to(body.global_position)
+		if dist < nearest_dist:
+			nearest_dist = dist
+			nearest = body
+	if nearest != null:
+		nearest.interact()
 
 
 ## 自动普攻（doc 08 §1）：攻击间隔到点 → 取攻击范围内最近可攻击目标 → 走公式
@@ -69,6 +90,7 @@ func get_save_state() -> Dictionary:
 		"mp": stats.current_mp,
 		"pos_x": global_position.x,
 		"pos_y": global_position.y,
+		"current_region": _current_region_id(),
 	}
 
 
@@ -79,3 +101,9 @@ func load_save_state(state: Dictionary) -> void:
 	global_position = Vector2(float(state.get("pos_x", 0.0)), float(state.get("pos_y", 0.0)))
 	get_tree().paused = false  # 读档强制解除暂停
 	EventBus.player_stats_changed.emit()
+
+
+## 当前区域 id 由 WorldManager 维护（避免 Player 反向持有世界引用）
+func _current_region_id() -> String:
+	var managers := get_tree().get_nodes_in_group("world_manager")
+	return String(managers[0].current_region_id) if managers.size() > 0 else ""

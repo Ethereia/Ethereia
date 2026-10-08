@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1_4ltt4"]
+
+[resource]
+script = ExtResource("1_4ltt4")
+id = "dlg_char_a_ying"
+nodes = Array[Dictionary]([{
+"choices": [{
+"effects": [],
+"next": "n1",
+"text": "你相信死者会记得生前吗？"
+}, {
+"effects": [],
+"next": "n2",
+"text": "告辞。"
+}],
+"conditions": {},
+"emotion": "疏离",
+"next": "",
+"node_id": "n0",
+"speaker_id": "char_a_ying",
+"text": "……你也是来问「为什么」的吗？"
+}, {
+"choices": [],
+"conditions": {},
+"emotion": "认真",
+"next": "",
+"node_id": "n1",
+"speaker_id": "char_a_ying",
+"text": "……问得好。也许记得的人不是死者——而是还在看着的我们。"
+}, {
+"choices": [],
+"conditions": {},
+"emotion": "疏离",
+"next": "",
+"node_id": "n2",
+"speaker_id": "char_a_ying",
+"text": "嗯。"
+}])
+entry_node_id = "n0"

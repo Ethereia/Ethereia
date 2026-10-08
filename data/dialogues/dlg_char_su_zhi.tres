@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1_1drpa"]
+
+[resource]
+script = ExtResource("1_1drpa")
+id = "dlg_char_su_zhi"
+nodes = Array[Dictionary]([{
+"choices": [{
+"effects": [],
+"next": "n1",
+"text": "需要帮忙吗？"
+}, {
+"effects": [],
+"next": "n2",
+"text": "告辞。"
+}],
+"conditions": {},
+"emotion": "温和",
+"next": "",
+"node_id": "n0",
+"speaker_id": "char_su_zhi",
+"text": "欢迎光临回春堂。最近灵草收成不好，我正想再去岭里采些……"
+}, {
+"choices": [],
+"conditions": {},
+"emotion": "好奇",
+"next": "",
+"node_id": "n1",
+"speaker_id": "char_su_zhi",
+"text": "你有心啦。对了——若在岭里见到奇怪的残页，带来给我看看。我最近在研究一些……很古老的笔迹。"
+}, {
+"choices": [],
+"conditions": {},
+"emotion": "温和",
+"next": "",
+"node_id": "n2",
+"speaker_id": "char_su_zhi",
+"text": "慢走。"
+}])
+entry_node_id = "n0"

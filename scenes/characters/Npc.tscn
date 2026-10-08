@@ -1,0 +1,46 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/gameplay/npc.gd" id="1_npc"]
+
+[sub_resource type="CircleShape2D" id="body_shape"]
+radius = 16.0
+
+[sub_resource type="CircleShape2D" id="sense_shape"]
+radius = 64.0
+
+[node name="Npc" type="StaticBody2D"]
+script = ExtResource("1_npc")
+
+[node name="Body" type="Polygon2D" parent="."]
+color = Color(0.55, 0.65, 0.95, 1)
+polygon = PackedVector2Array(-18, -22, 18, -22, 18, 18, -18, 18)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("body_shape")
+
+[node name="NameLabel" type="Label" parent="."]
+offset_left = -70.0
+offset_top = -68.0
+offset_right = 70.0
+offset_bottom = -48.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "NPC"
+horizontal_alignment = 1
+
+[node name="InteractHint" type="Label" parent="."]
+visible = false
+offset_left = -40.0
+offset_top = 24.0
+offset_right = 40.0
+offset_bottom = 42.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "E 交谈"
+horizontal_alignment = 1
+
+[node name="SenseArea" type="Area2D" parent="."]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SenseArea"]
+shape = SubResource("sense_shape")
