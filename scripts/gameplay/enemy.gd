@@ -1,41 +1,11 @@
-## 敌人（阶段3→4）：追击 + 技能优先级 + 状态 + Boss 狂暴 + 掉落
-## 技能表/元素映射为代码占位（Schema 冻结无对应字段），Phase 7 数据表化
+## 敌人（阶段3→4→7）：追击 + 技能优先级 + 状态 + Boss 狂暴 + 掉落
+## 技能/元素/掉落全部数据驱动（CharacterData v1.1 敌人字段，ADR-008）；缺数据时降级为纯普攻
 class_name Enemy
 extends CharacterBody2D
 
 enum State { IDLE, CHASE, ATTACK }
 
 const BOSS_ID := "char_hei_feng_yao_lang_wang"
-
-## 技能表占位：{enemy_id: [skill_id,...]}（冷却制，敌人无 mp 属性）
-const SKILL_TABLE := {
-	"char_ye_lang_yao": ["skill_lang_feng_ren", "skill_lang_si_ya"],
-	"char_hei_feng_dao_fei": ["skill_dao_fei_dao"],
-	BOSS_ID: ["skill_boss_pu_ji", "skill_boss_hao_jiao"],
-}
-
-## 元素映射占位：克制计算用（金→木 反向演示：盗匪金系被玩家木系克制）
-const ENEMY_ELEMENT := {
-	"char_ye_lang_yao": "风",
-	"char_hei_feng_dao_fei": "金",
-	BOSS_ID: "风",
-}
-
-## 掉落表占位：{enemy_id: [{item_id, count, chance}]}
-const DROP_TABLE := {
-	"char_ye_lang_yao": [
-		{"item_id": "item_ling_shi", "count": 2, "chance": 1.0},
-		{"item_id": "item_ling_cao", "count": 1, "chance": 0.5},
-		{"item_id": "item_gong_fa_can_ye", "count": 1, "chance": 0.15},
-	],
-	"char_hei_feng_dao_fei": [
-		{"item_id": "item_ling_shi", "count": 5, "chance": 1.0},
-	],
-	BOSS_ID: [
-		{"item_id": "item_ling_shi", "count": 20, "chance": 1.0},
-		{"item_id": "item_gong_fa_can_ye", "count": 1, "chance": 1.0},
-	],
-}
 
 const LEASH_DIST := 320.0      # 离出生点超过此距离回 idle（脱战）
 const ATTACK_RANGE := 52.0
@@ -62,6 +32,9 @@ var _attack_cooldown := 0.0
 var _skill_cooldowns: Dictionary = {}  # {skill_id: 剩余秒}
 var _stuck_timer := 0.0
 var _enraged := false  # Boss 狂暴一次性标记
+var _skills: Array = []            # 数据驱动技能表（CharacterData.enemy_skills）
+var _element := ""                 # 数据驱动元素（CharacterData.enemy_element）
+var _drops: Array = []             # 数据驱动掉落表（CharacterData.drop_table）
 
 @onready var _sense_area: Area2D = $SenseArea
 @onready var _name_label: Label = $NameLabel
@@ -87,15 +60,18 @@ func _ready() -> void:
 		evasion = float(bs.get("evasion", 0.05))
 		move_speed = CultivationUtils.move_speed(float(bs.get("speed", 8.0)))
 		current_hp = max_hp
+		_skills = data.enemy_skills
+		_element = data.enemy_element
+		_drops = data.drop_table
 	else:
 		push_warning("Enemy: 缺少数据 %s，用内置占位数值" % enemy_id)
 	_sense_area.body_entered.connect(_on_sense_body_entered)
 	_sense_area.body_exited.connect(_on_sense_body_exited)
 
 
-## 敌人元素：ENEMY_ELEMENT 映射（克制计算用）
+## 敌人元素：数据驱动（克制计算用）
 func element_of() -> String:
-	return String(ENEMY_ELEMENT.get(enemy_id, ""))
+	return _element
 
 
 func _physics_process(delta: float) -> void:
@@ -170,7 +146,7 @@ func _attack(player: Node2D, delta: float) -> void:
 
 ## 技能决策：冷却好 + 距离达标 → 经 SkillExecutor 结算（伤害/状态/AOE）
 func _try_cast_skill(player: Node2D) -> bool:
-	for skill_id: String in SKILL_TABLE.get(enemy_id, []):
+	for skill_id: String in _skills:
 		if float(_skill_cooldowns.get(skill_id, 0.0)) > 0.0:
 			continue
 		var skill := DataManager.get_entry("skills", skill_id) as SkillData
@@ -187,7 +163,7 @@ func _try_cast_skill(player: Node2D) -> bool:
 
 func _attack_window() -> float:
 	var window := ATTACK_RANGE
-	for skill_id: String in SKILL_TABLE.get(enemy_id, []):
+	for skill_id: String in _skills:
 		var skill := DataManager.get_entry("skills", skill_id) as SkillData
 		if skill != null and skill.power > 0.0:
 			window = maxf(window, skill.cast_range)
@@ -253,9 +229,8 @@ func _die() -> void:
 
 
 func _spawn_drops() -> void:
-	var table: Array = DROP_TABLE.get(enemy_id, [])
 	var parent := get_parent()
-	for drop: Dictionary in table:
+	for drop: Dictionary in _drops:
 		if randf() > float(drop.get("chance", 1.0)):
 			continue
 		var pickup := PICKUP_SCENE.instantiate()

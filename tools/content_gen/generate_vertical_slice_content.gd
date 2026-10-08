@@ -218,6 +218,17 @@ func _gen_items() -> Array[Resource]:
 	herb.description = "青石镇周边常见的药草，是炼制入门丹药的基础材料。"
 	list.append(herb)
 
+	var fang := ItemData.new()
+	fang.id = "item_yao_lang_ya"
+	fang.display_name = "妖狼獠牙"
+	fang.item_type = ItemData.ItemType.RESOURCE_T2
+	fang.grade = 1
+	fang.stackable = true
+	fang.base_value = 6
+	fang.effects = []
+	fang.description = "野狼妖脱落的獠牙，边缘泛着幽绿微光。铁牛说这东西炼器还能用。"
+	list.append(fang)
+
 	var page := ItemData.new()
 	page.id = "item_gong_fa_can_ye"
 	page.display_name = "引灵诀残页"
@@ -397,6 +408,15 @@ func _make_ye_lang_yao() -> CharacterData:
 	c.interest = "血肉"
 	c.secret = "眼中偶尔闪过不属于野兽的幽绿光芒"
 	c.relationships = {}
+	# v1.1 敌人战斗字段（原 enemy.gd 常量映射表化）
+	c.enemy_skills = ["skill_lang_feng_ren", "skill_lang_si_ya"]
+	c.enemy_element = "风"
+	c.drop_table = [
+		{"item_id": "item_ling_shi", "count": 2, "chance": 1.0},
+		{"item_id": "item_ling_cao", "count": 1, "chance": 0.5},
+		{"item_id": "item_gong_fa_can_ye", "count": 1, "chance": 0.15},
+		{"item_id": "item_yao_lang_ya", "count": 1, "chance": 0.6},
+	]
 	return c
 
 
@@ -419,6 +439,12 @@ func _make_hei_feng_dao_fei() -> CharacterData:
 	c.interest = "财物"
 	c.secret = "他们劫的不只是货——上头有人专门收妖兽尸体"
 	c.relationships = {}
+	# v1.1 敌人战斗字段（原 enemy.gd 常量映射表化）
+	c.enemy_skills = ["skill_dao_fei_dao"]
+	c.enemy_element = "金"
+	c.drop_table = [
+		{"item_id": "item_ling_shi", "count": 5, "chance": 1.0},
+	]
 	return c
 
 
@@ -447,8 +473,50 @@ func _gen_quests() -> Array[Resource]:
 	q.consequences = [
 		{"target": "faction:faction_qingshi_town", "key": "relation", "op": "add", "value": -5},
 	]
-	q.next_quests = []
+	q.next_quests = ["quest_hei_feng_shen_ru"]
 	list.append(q)
+
+	# 任务链 2（Phase 7）：深入调查——收集獠牙 + 修为精进 + 铁牛处汇总线索
+	var q2 := QuestData.new()
+	q2.id = "quest_hei_feng_shen_ru"
+	q2.display_name = "深入黑风岭"
+	q2.description = "妖兽作乱的背后另有蹊跷。搜集妖狼獠牙作凭证，把修为磨炼到炼气二层，再找铁牛汇总岭中见闻。"
+	q2.giver = "char_tie_niu"
+	q2.requirements = []
+	q2.objectives = [
+		{"type": "收集", "target_id": "item_yao_lang_ya", "count": 3, "params": {}},
+		{"type": "修炼", "target_id": "", "count": 1, "params": {"realm_index": 1, "realm_layer": 2}},
+		{"type": "对话", "target_id": "char_tie_niu", "count": 1, "params": {"topic": "汇总线索"}},
+	]
+	q2.rewards = [
+		{"target": "player", "key": "item:item_ling_shi", "op": "add", "value": 30},
+		{"target": "player", "key": "item:item_hui_xue_san", "op": "add", "value": 2},
+	]
+	q2.failure_conditions = []
+	q2.consequences = []
+	q2.next_quests = ["quest_yao_lang_wang_tao_fa"]
+	list.append(q2)
+
+	# 任务链 3（Phase 7）：讨伐妖狼王——垂直切片 Step 11 Boss 战，Step 12 冥门伏笔由 WorldManager 呈现
+	var q3 := QuestData.new()
+	q3.id = "quest_yao_lang_wang_tao_fa"
+	q3.display_name = "讨伐黑风妖狼王"
+	q3.description = "线索都指向妖狼巢穴深处的那头妖狼王。讨伐它，终结黑风岭的失踪事件，并回报秦伯远。"
+	q3.giver = "char_qin_bo_yuan"
+	q3.requirements = []
+	q3.objectives = [
+		{"type": "战斗", "target_id": "char_hei_feng_yao_lang_wang", "count": 1, "params": {}},
+		{"type": "对话", "target_id": "char_qin_bo_yuan", "count": 1, "params": {"topic": "回报讨伐"}},
+	]
+	q3.rewards = [
+		{"target": "player", "key": "item:item_ling_shi", "op": "add", "value": 100},
+		{"target": "player", "key": "item:item_ju_qi_san", "op": "add", "value": 3},
+		{"target": "player", "key": "realm_exp", "op": "add", "value": 80},
+	]
+	q3.failure_conditions = []
+	q3.consequences = []
+	q3.next_quests = []
+	list.append(q3)
 	return list
 
 
@@ -464,8 +532,9 @@ func _gen_events() -> Array[Resource]:
 	e.priority = 10
 	e.cooldown_days = 0  # 一次性剧情事件：已触发标记由阶段7事件管理器保证
 	e.trigger = EventData.Trigger.STATE_CONDITION
+	# Phase 7：调查任务完成（回报后）触发——doc 27 Step 8 神秘少女之问
 	e.conditions = [
-		{"key": "player.realm_layer", "op": ">=", "value": 2},
+		{"key": "quest.quest_diao_cha_hei_feng_ling", "op": "==", "value": "completed"},
 	]
 	e.choices = [
 		{
@@ -488,7 +557,8 @@ func _gen_events() -> Array[Resource]:
 			"text": "「我不知道……但我想知道。」",
 			"effects": [{"target": "player", "key": "dao_heart.求知", "op": "add", "value": 5}],
 			"delayed_effects": [{"target": "char:char_a_ying", "key": "relationship", "op": "add", "value": 5}],
-			"hidden_effects": [{"target": "world", "key": "flag:a_ying_answer", "op": "set", "value": "curious"}],
+			# 剧情 flag 随选择立即落地（world set，Phase 7 最小实现）；好感延迟结果留 Phase 8
+			"hidden_effects": [{"target": "world", "key": "a_ying_answer", "op": "set", "value": "curious"}],
 			"requirements": [],
 			"hint": "",
 		},
@@ -519,13 +589,15 @@ func _make_dlg_qin_bo_yuan() -> DialogueData:
 	d.entry_node_id = "n0"
 	d.nodes = [
 		{"node_id": "n0", "speaker_id": "char_qin_bo_yuan", "text": "接连有人在黑风岭失踪，镇民人心惶惶……你既是修士，可愿帮老夫一探？", "emotion": "忧虑", "conditions": {}, "choices": [
-			{"text": "愿效劳。", "effects": [{"target": "quest", "key": "quest_diao_cha_hei_feng_ling", "op": "accept"}], "next": "n1"},
-			{"text": "我已查明真相。", "effects": [{"target": "quest", "key": "quest_diao_cha_hei_feng_ling", "op": "report"}], "next": "n2"},
+			{"text": "愿效劳。", "effects": [{"target": "quest", "key": "quest_diao_cha_hei_feng_ling", "op": "accept"}], "requirements": [{"key": "quest.quest_diao_cha_hei_feng_ling", "op": "==", "value": "none"}], "hint": "调查任务已在进行或已完成", "next": "n1"},
+			{"text": "我已查明真相。", "effects": [{"target": "quest", "key": "quest_diao_cha_hei_feng_ling", "op": "report"}], "requirements": [{"key": "quest.quest_diao_cha_hei_feng_ling", "op": "==", "value": "completed"}], "hint": "先去黑风岭查明真相并击退妖兽", "next": "n2"},
+			{"text": "妖狼王已伏诛。", "effects": [{"target": "quest", "key": "quest_yao_lang_wang_tao_fa", "op": "report"}], "requirements": [{"key": "quest.quest_yao_lang_wang_tao_fa", "op": "==", "value": "active"}], "hint": "先讨伐巢穴深处的妖狼王", "next": "n4"},
 			{"text": "容我考虑。", "effects": [], "next": "n3"},
 		], "next": ""},
 		{"node_id": "n1", "speaker_id": "char_qin_bo_yuan", "text": "好！老夫代全镇谢过。岭中妖兽凶戾，务必小心。", "emotion": "郑重", "conditions": {}, "choices": [], "next": ""},
 		{"node_id": "n2", "speaker_id": "char_qin_bo_yuan", "text": "……竟有此事？妖狼异常、地下冥气……老夫明白了。这点谢礼请务必收下。", "emotion": "释然", "conditions": {}, "choices": [], "next": ""},
 		{"node_id": "n3", "speaker_id": "char_qin_bo_yuan", "text": "老夫等你的消息。", "emotion": "平静", "conditions": {}, "choices": [], "next": ""},
+		{"node_id": "n4", "speaker_id": "char_qin_bo_yuan", "text": "失踪案就此了结……可妖狼异常的根由，恐怕才刚刚开始。老夫先代全镇谢过，日后还得多仰仗阁下。", "emotion": "复杂", "conditions": {}, "choices": [], "next": ""},
 	]
 	return d
 
@@ -554,10 +626,12 @@ func _make_dlg_tie_niu() -> DialogueData:
 	d.nodes = [
 		{"node_id": "n0", "speaker_id": "char_tie_niu", "text": "嘿，新面孔！想打铁还是听故事？都行——反正炉子一刻不能停！", "emotion": "爽朗", "conditions": {}, "choices": [
 			{"text": "聊聊黑风岭。", "effects": [], "next": "n1"},
+			{"text": "我汇总好了岭中见闻。", "effects": [{"target": "quest", "key": "quest_hei_feng_shen_ru", "op": "report"}], "requirements": [{"key": "quest.quest_hei_feng_shen_ru", "op": "==", "value": "active"}], "hint": "先收集妖狼獠牙并精进修为", "next": "n3"},
 			{"text": "告辞。", "effects": [], "next": "n2"},
 		], "next": ""},
 		{"node_id": "n1", "speaker_id": "char_tie_niu", "text": "那帮流寇最近邪门得很！前几日我在岭边捡到块黑铁——嗨，说不上来，反正不是凡铁。你要去岭里，帮我盯着点那帮狼！", "emotion": "激动", "conditions": {}, "choices": [], "next": ""},
 		{"node_id": "n2", "speaker_id": "char_tie_niu", "text": "走好嘞！", "emotion": "爽朗", "conditions": {}, "choices": [], "next": ""},
+		{"node_id": "n3", "speaker_id": "char_tie_niu", "text": "三颗獠牙都泛着绿光……这不正常！老哥，巢穴深处那头狼王才是祸根。你去讨伐它，我回镇里给你声援！", "emotion": "凝重", "conditions": {}, "choices": [], "next": ""},
 	]
 	return d
 
@@ -635,4 +709,11 @@ func _make_boss() -> CharacterData:
 	c.interest = "血食"
 	c.secret = "它腹下有一道黑色印记——与冥门的气息同源"
 	c.relationships = {}
+	# v1.1 敌人战斗字段（原 enemy.gd 常量映射表化）
+	c.enemy_skills = ["skill_boss_pu_ji", "skill_boss_hao_jiao"]
+	c.enemy_element = "风"
+	c.drop_table = [
+		{"item_id": "item_ling_shi", "count": 20, "chance": 1.0},
+		{"item_id": "item_gong_fa_can_ye", "count": 1, "chance": 1.0},
+	]
 	return c

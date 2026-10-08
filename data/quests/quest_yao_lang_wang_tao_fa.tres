@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="QuestData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/quest_data.gd" id="1_tjg7p"]
+
+[resource]
+script = ExtResource("1_tjg7p")
+id = "quest_yao_lang_wang_tao_fa"
+display_name = "讨伐黑风妖狼王"
+description = "线索都指向妖狼巢穴深处的那头妖狼王。讨伐它，终结黑风岭的失踪事件，并回报秦伯远。"
+giver = "char_qin_bo_yuan"
+objectives = Array[Dictionary]([{
+"count": 1,
+"params": {},
+"target_id": "char_hei_feng_yao_lang_wang",
+"type": "战斗"
+}, {
+"count": 1,
+"params": {
+"topic": "回报讨伐"
+},
+"target_id": "char_qin_bo_yuan",
+"type": "对话"
+}])
+rewards = Array[Dictionary]([{
+"key": "item:item_ling_shi",
+"op": "add",
+"target": "player",
+"value": 100
+}, {
+"key": "item:item_ju_qi_san",
+"op": "add",
+"target": "player",
+"value": 3
+}, {
+"key": "realm_exp",
+"op": "add",
+"target": "player",
+"value": 80
+}])

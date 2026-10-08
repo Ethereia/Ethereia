@@ -48,3 +48,4 @@ consequences = Array[Dictionary]([{
 "target": "faction:faction_qingshi_town",
 "value": -5
 }])
+next_quests = Array[String](["quest_hei_feng_shen_ru"])

@@ -35,3 +35,22 @@ goal = "捕猎"
 fear = "更强的狼王"
 interest = "血肉"
 secret = "眼中偶尔闪过不属于野兽的幽绿光芒"
+enemy_skills = Array[String](["skill_lang_feng_ren", "skill_lang_si_ya"])
+enemy_element = "风"
+drop_table = Array[Dictionary]([{
+"chance": 1.0,
+"count": 2,
+"item_id": "item_ling_shi"
+}, {
+"chance": 0.5,
+"count": 1,
+"item_id": "item_ling_cao"
+}, {
+"chance": 0.15,
+"count": 1,
+"item_id": "item_gong_fa_can_ye"
+}, {
+"chance": 0.6,
+"count": 1,
+"item_id": "item_yao_lang_ya"
+}])

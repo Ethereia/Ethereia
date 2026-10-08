@@ -27,8 +27,10 @@ static func _apply_one(effect: Dictionary, context: Node) -> void:
 			_apply_player(key, op, value, context)
 		"quest":
 			_apply_quest(key, op, context)
+		"world":
+			_apply_world(key, op, value, context)
 		_:
-			# char:/faction:/world/dao_heart.* 等：对应系统落地前忽略
+			# char:/faction: 等：对应系统落地前忽略
 			print("[EffectResolver] 忽略未支持效果（对应系统落地前占位）：%s %s %s" % [target, key, op])
 
 
@@ -60,6 +62,16 @@ static func _apply_player(key: String, op: String, value: Variant, context: Node
 			if cm2 != null and op == "learn":
 				cm2.learn_technique(String(value))
 			return
+	if key.begins_with("dao_heart."):
+		# 道心 6 维增减（Phase 7 最小落地：只写运行时值，门槛消费留 Phase 8）
+		var dim := key.trim_prefix("dao_heart.")
+		if op == "add":
+			var cm3 := _find_cultivation_manager(context)
+			if cm3 != null:
+				cm3.add_dao_heart(dim, int(value))
+		else:
+			push_warning("[EffectResolver] 未支持的道心 op=%s（仅 add）" % op)
+		return
 	if not key.begins_with("item:"):
 		push_warning("[EffectResolver] 未支持的 player 效果 key=%s（Phase 4/5 扩展）" % key)
 		return
@@ -98,6 +110,19 @@ static func _apply_quest(quest_id: String, op: String, context: Node) -> void:
 			manager.complete_quest(quest_id)
 		_:
 			push_warning("[EffectResolver] 未知任务 op=%s" % op)
+
+
+static func _apply_world(key: String, op: String, value: Variant, context: Node) -> void:
+	# 世界标志写入（Phase 7 最小落地）：剧情链依赖的 flag，经 WorldManager 持久化并广播
+	var wm := _find_by_group("world_manager", context)
+	if wm == null:
+		push_warning("[EffectResolver] WorldManager 不在场景树")
+		return
+	match op:
+		"set":
+			wm.set_world_flag(key, value)
+		_:
+			push_warning("[EffectResolver] 未支持的 world op=%s（仅 set）" % op)
 
 
 static func _find_by_group(group: String, context: Node) -> Node:

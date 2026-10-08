@@ -36,3 +36,14 @@ goal = "吞尽岭中灵气，化形为妖"
 fear = "岭下那道门的气息"
 interest = "血食"
 secret = "它腹下有一道黑色印记——与冥门的气息同源"
+enemy_skills = Array[String](["skill_boss_pu_ji", "skill_boss_hao_jiao"])
+enemy_element = "风"
+drop_table = Array[Dictionary]([{
+"chance": 1.0,
+"count": 20,
+"item_id": "item_ling_shi"
+}, {
+"chance": 1.0,
+"count": 1,
+"item_id": "item_gong_fa_can_ye"
+}])

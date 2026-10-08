@@ -7,10 +7,10 @@ extends Node
 const SAVABLE_GROUP := "savable"
 const SAVE_VERSION := 2
 
-## 11 段标准存档结构（doc 16 §4 / doc 29 §3，ADR-007）
+## 标准存档段结构（doc 16 §4 / doc 29 §3，ADR-007；v1.1 增 events 段——ADR-008）
 const SAVE_SECTIONS: Array[String] = [
 	"player_state", "cultivation_state", "inventory", "characters", "sect_state",
-	"world_state", "quests", "factions", "time_state", "settings",
+	"world_state", "quests", "events", "factions", "time_state", "settings",
 ]
 
 const SAVE_DIR := "user://saves/"

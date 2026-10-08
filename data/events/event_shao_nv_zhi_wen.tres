@@ -9,9 +9,9 @@ title = "少女之问"
 description = "夜色渐深，阿萤忽然转头问你：「你相信死者会记得生前吗？」她的眼睛在月光下亮得不像话。"
 priority = 10
 conditions = Array[Dictionary]([{
-"key": "player.realm_layer",
-"op": ">=",
-"value": 2
+"key": "quest.quest_diao_cha_hei_feng_ling",
+"op": "==",
+"value": "completed"
 }])
 choices = Array[Dictionary]([{
 "delayed_effects": [{
@@ -61,7 +61,7 @@ choices = Array[Dictionary]([{
 "value": 5
 }],
 "hidden_effects": [{
-"key": "flag:a_ying_answer",
+"key": "a_ying_answer",
 "op": "set",
 "target": "world",
 "value": "curious"

@@ -11,6 +11,20 @@ nodes = Array[Dictionary]([{
 "next": "n1",
 "text": "聊聊黑风岭。"
 }, {
+"effects": [{
+"key": "quest_hei_feng_shen_ru",
+"op": "report",
+"target": "quest"
+}],
+"hint": "先收集妖狼獠牙并精进修为",
+"next": "n3",
+"requirements": [{
+"key": "quest.quest_hei_feng_shen_ru",
+"op": "==",
+"value": "active"
+}],
+"text": "我汇总好了岭中见闻。"
+}, {
 "effects": [],
 "next": "n2",
 "text": "告辞。"
@@ -37,5 +51,13 @@ nodes = Array[Dictionary]([{
 "node_id": "n2",
 "speaker_id": "char_tie_niu",
 "text": "走好嘞！"
+}, {
+"choices": [],
+"conditions": {},
+"emotion": "凝重",
+"next": "",
+"node_id": "n3",
+"speaker_id": "char_tie_niu",
+"text": "三颗獠牙都泛着绿光……这不正常！老哥，巢穴深处那头狼王才是祸根。你去讨伐它，我回镇里给你声援！"
 }])
 entry_node_id = "n0"

@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="QuestData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/quest_data.gd" id="1_wbesn"]
+
+[resource]
+script = ExtResource("1_wbesn")
+id = "quest_hei_feng_shen_ru"
+display_name = "深入黑风岭"
+description = "妖兽作乱的背后另有蹊跷。搜集妖狼獠牙作凭证，把修为磨炼到炼气二层，再找铁牛汇总岭中见闻。"
+giver = "char_tie_niu"
+objectives = Array[Dictionary]([{
+"count": 3,
+"params": {},
+"target_id": "item_yao_lang_ya",
+"type": "收集"
+}, {
+"count": 1,
+"params": {
+"realm_index": 1,
+"realm_layer": 2
+},
+"target_id": "",
+"type": "修炼"
+}, {
+"count": 1,
+"params": {
+"topic": "汇总线索"
+},
+"target_id": "char_tie_niu",
+"type": "对话"
+}])
+rewards = Array[Dictionary]([{
+"key": "item:item_ling_shi",
+"op": "add",
+"target": "player",
+"value": 30
+}, {
+"key": "item:item_hui_xue_san",
+"op": "add",
+"target": "player",
+"value": 2
+}])
+next_quests = Array[String](["quest_yao_lang_wang_tao_fa"])

@@ -127,6 +127,20 @@ func record_harvest(node_key: String) -> void:
 	_regions_state[current_region_id] = state
 
 
+## 世界标志（Phase 7 事件/剧情条件来源）：顶层键，随 world_state 段自动持久化
+func set_world_flag(key: String, value: Variant) -> void:
+	_regions_state[key] = value
+	EventBus.world_state_changed.emit(key, value)
+
+
+func get_world_flag(key: String) -> Variant:
+	return _regions_state.get(key)
+
+
+func has_world_flag(key: String) -> bool:
+	return _regions_state.has(key)
+
+
 # --- 存档（world_state 段） ---
 
 func get_save_section() -> String:

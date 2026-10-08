@@ -34,6 +34,7 @@ signal item_removed(item_id: String, count: int)
 # --- 交互与对话（阶段3） ---
 signal npc_interacted(npc_id: String, dialogue_id: String)
 signal dialogue_finished(npc_id: String)
+signal dialogue_choice_made(source_id: String, choice_index: int)  # 阶段7：对话/事件选项落地（source_id = dlg_/event_ id）
 
 # --- 任务（阶段7完善，阶段3最小推进） ---
 signal quest_accepted(quest_id: String)

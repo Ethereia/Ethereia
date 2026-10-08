@@ -25,3 +25,8 @@ enum CharacterType { PLAYER, CORE_NPC, NPC, ENEMY, DISCIPLE }
 @export var portrait: String = ""                      # 半身立绘路径（空=占位）
 @export var avatar: String = ""                        # 头像路径（空=占位）
 @export var sprite_path: String = ""                   # 战斗 Sprite 路径（空=占位）
+
+# --- v1.1 敌人战斗字段（doc 29 v1.1 / ADR-008：Phase 7 敌人数据表化，非敌人角色留空默认） ---
+@export var enemy_skills: Array[String] = []           # 技能 id 列表（冷却制优先施放，缺省仅普攻）
+@export var enemy_element: String = ""                 # 元素（五行克制计算用）
+@export var drop_table: Array[Dictionary] = []         # 掉落 [{item_id, count, chance}]

@@ -1,19 +1,24 @@
-## 游戏 HUD（Phase 2）：境界/HP/MP 显示 + 暂停切换
+## 游戏 HUD（Phase 2→7）：境界/HP/MP 显示 + 暂停切换 + 任务追踪行
 ## process_mode=ALWAYS：暂停时仍需响应 pause_toggle 解除暂停
-## 数据获取：连接无参信号 player_stats_changed 后主动从 player 组拉取（doc 15：UI 不反向调玩家私有逻辑）
+## 数据获取：连接无参信号后主动从场景树组拉取（doc 15：UI 不反向调系统私有逻辑）
 extends CanvasLayer
 
 @onready var _realm_label: Label = $TopRight/VBox/RealmLabel
 @onready var _hp_bar: ProgressBar = $TopRight/VBox/HPBox/HPBar
 @onready var _mp_bar: ProgressBar = $TopRight/VBox/MPBox/MPBar
 @onready var _paused_label: Label = $PausedLabel
+@onready var _track_label: Label = $TrackLabel
 @onready var _cd_labels: Array[Label] = [$SkillBar/Slot1/VBox/CDLabel, $SkillBar/Slot2/VBox/CDLabel, $SkillBar/Slot3/VBox/CDLabel]
 
 
 func _ready() -> void:
 	EventBus.player_stats_changed.connect(_refresh)
+	EventBus.quest_accepted.connect(_refresh_track)
+	EventBus.quest_completed.connect(_refresh_track)
+	EventBus.quest_progress_changed.connect(_refresh_track)
 	_paused_label.visible = false
 	_refresh()  # Player 可能先于 HUD ready（已补发信号），也可能晚于（此处兜底拉取）
+	_refresh_track("")
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -66,3 +71,21 @@ func _refresh() -> void:
 		_realm_label.text = "%s（%s）" % [s.data.display_name, CultivationUtils.realm_display(cm.realm_index, cm.realm_layer)]
 	else:
 		_realm_label.text = "%s（%s）" % [s.data.display_name, CultivationUtils.realm_display(s.data.realm_index, s.data.realm_layer)]
+
+
+## 任务追踪行（阶段7）：QuestManager.tracked_id 的下一目标提示
+func _refresh_track(_quest_id: String = "") -> void:
+	var qm := get_tree().get_first_node_in_group("quest_manager")
+	if qm == null:
+		_track_label.text = ""
+		return
+	var tracked: String = qm.tracked_id
+	# 追踪任务可能已被清理（测试/异常路径）：状态 none 时直接清空，避免查询已删除条目
+	if tracked.is_empty() or qm.quest_state_of(tracked) == "none":
+		_track_label.text = ""
+		return
+	var view: Dictionary = qm.get_quest_view(tracked)
+	if view.is_empty():
+		_track_label.text = ""
+		return
+	_track_label.text = "【任务】%s：%s" % [String(view.get("display_name", tracked)), qm.next_objective_hint(tracked)]

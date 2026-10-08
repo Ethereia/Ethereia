@@ -11,6 +11,7 @@ var learned_techniques: Array[String] = []
 var active_technique := ""            # 运功功法 id（空 = 无功法）
 var technique_progress: Dictionary = {}  # {technique_id: int}
 var meditating := false
+var dao_heart_runtime: Dictionary = {}  # {维度: int} Phase 7 起可被剧情选择改变；空时回落 CharacterData.dao_heart
 
 @onready var _player: Player = null
 
@@ -130,12 +131,13 @@ func _factor_value(factor: String) -> float:
 			var need: float = float(tech.spirit_root_requirement.values()[0])
 			return clampf(purity / maxf(need, 1.0), 0.0, 1.0)
 		"dao_heart":
-			if player == null or player.stats.data == null or player.stats.data.dao_heart.is_empty():
+			var dh := _effective_dao_heart()
+			if dh.is_empty():
 				return 0.5
 			var total := 0.0
-			for v: int in player.stats.data.dao_heart.values():
+			for v: int in dh.values():
 				total += v
-			return total / (100.0 * player.stats.data.dao_heart.size())
+			return total / (100.0 * dh.size())
 		"technique_mastery":
 			if tech == null:
 				return 0.3  # 无功法占位
@@ -153,6 +155,32 @@ func _main_root_purity(player: Player) -> float:
 	if player == null or player.stats.data == null or player.stats.data.spirit_roots.is_empty():
 		return 50.0
 	return float(player.stats.data.spirit_roots.values()[0])
+
+
+## 道心运行时值（Phase 7）：剧情选择可增减；未改动时回落 CharacterData.dao_heart
+func _effective_dao_heart() -> Dictionary:
+	if not dao_heart_runtime.is_empty():
+		return dao_heart_runtime
+	var player := _player_ref()
+	if player != null and player.stats.data != null:
+		return player.stats.data.dao_heart
+	return {}
+
+
+## 道心增减统一入口（EffectResolver dao_heart.<维度> 效果调用）
+func add_dao_heart(dim: String, amount: int) -> void:
+	if not dim in CultivationConstants.DAO_HEART_DIMENSIONS:
+		push_warning("[Cultivation] 未知道心维度 %s" % dim)
+		return
+	if dao_heart_runtime.is_empty():
+		dao_heart_runtime = _effective_dao_heart().duplicate()
+	dao_heart_runtime[dim] = clampi(int(dao_heart_runtime.get(dim, 0)) + amount, CultivationConstants.DAO_HEART_MIN, CultivationConstants.DAO_HEART_MAX)
+	print("[Cultivation] 道心 %s %+d → %d" % [dim, amount, dao_heart_runtime[dim]])
+	EventBus.cultivation_state_changed.emit()
+
+
+func get_dao_heart(dim: String) -> int:
+	return int(_effective_dao_heart().get(dim, 0))
 
 
 func _active_tech_resource() -> TechniqueData:
@@ -237,6 +265,7 @@ func get_save_state() -> Dictionary:
 		"active_technique": active_technique,
 		"technique_progress": technique_progress,
 		"meditating": meditating,
+		"dao_heart_runtime": dao_heart_runtime,
 	}
 
 
@@ -252,5 +281,6 @@ func load_save_state(state: Dictionary) -> void:
 	active_technique = String(state.get("active_technique", ""))
 	technique_progress = state.get("technique_progress", {})
 	meditating = bool(state.get("meditating", false))
+	dao_heart_runtime = state.get("dao_heart_runtime", {})
 	_refresh_player_stats()  # 主动重算（savable 应用顺序不定，此处兜底）
 	EventBus.cultivation_state_changed.emit()

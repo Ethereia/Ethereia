@@ -12,7 +12,13 @@ nodes = Array[Dictionary]([{
 "op": "accept",
 "target": "quest"
 }],
+"hint": "调查任务已在进行或已完成",
 "next": "n1",
+"requirements": [{
+"key": "quest.quest_diao_cha_hei_feng_ling",
+"op": "==",
+"value": "none"
+}],
 "text": "愿效劳。"
 }, {
 "effects": [{
@@ -20,8 +26,28 @@ nodes = Array[Dictionary]([{
 "op": "report",
 "target": "quest"
 }],
+"hint": "先去黑风岭查明真相并击退妖兽",
 "next": "n2",
+"requirements": [{
+"key": "quest.quest_diao_cha_hei_feng_ling",
+"op": "==",
+"value": "completed"
+}],
 "text": "我已查明真相。"
+}, {
+"effects": [{
+"key": "quest_yao_lang_wang_tao_fa",
+"op": "report",
+"target": "quest"
+}],
+"hint": "先讨伐巢穴深处的妖狼王",
+"next": "n4",
+"requirements": [{
+"key": "quest.quest_yao_lang_wang_tao_fa",
+"op": "==",
+"value": "active"
+}],
+"text": "妖狼王已伏诛。"
 }, {
 "effects": [],
 "next": "n3",
@@ -57,5 +83,13 @@ nodes = Array[Dictionary]([{
 "node_id": "n3",
 "speaker_id": "char_qin_bo_yuan",
 "text": "老夫等你的消息。"
+}, {
+"choices": [],
+"conditions": {},
+"emotion": "复杂",
+"next": "",
+"node_id": "n4",
+"speaker_id": "char_qin_bo_yuan",
+"text": "失踪案就此了结……可妖狼异常的根由，恐怕才刚刚开始。老夫先代全镇谢过，日后还得多仰仗阁下。"
 }])
 entry_node_id = "n0"

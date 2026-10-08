@@ -44,3 +44,10 @@ goal = "劫够灵石后金盆洗手"
 fear = "官府缉拿与岭中妖狼"
 interest = "财物"
 secret = "他们劫的不只是货——上头有人专门收妖兽尸体"
+enemy_skills = Array[String](["skill_dao_fei_dao"])
+enemy_element = "金"
+drop_table = Array[Dictionary]([{
+"chance": 1.0,
+"count": 5,
+"item_id": "item_ling_shi"
+}])
