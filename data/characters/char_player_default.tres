@@ -1,0 +1,44 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/character_data.gd" id="1_1n2ym"]
+
+[resource]
+script = ExtResource("1_1n2ym")
+id = "char_player_default"
+display_name = "无名修士"
+title = "初入江湖"
+character_type = 0
+realm_index = 1
+spirit_roots = {
+"木": 60
+}
+dao_heart = {
+"坚毅": 50,
+"慈悲": 50,
+"执念": 40,
+"杀伐": 30,
+"求知": 50,
+"自由": 40
+}
+base_stats = {
+"accuracy": 0.9,
+"atk": 12,
+"crit": 0.05,
+"def": 8,
+"evasion": 0.08,
+"hp": 100,
+"m_atk": 10,
+"m_def": 8,
+"mp": 50,
+"speed": 9
+}
+spirit_stats = {
+"因果": 50,
+"气运": 50,
+"灵根强度": 60,
+"神魂": 50
+}
+personality = "尚未定型（阶段2占位，捏人流程在垂直切片 Step 1 实现）"
+goal = "在青石镇立足"
+fear = "未知"
+interest = "变强"

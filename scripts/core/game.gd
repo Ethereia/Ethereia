@@ -1,7 +1,11 @@
-## 游戏主场景（阶段0骨架）：用调试面板验证 存档/读档/时间推进 闭环（里程碑 M1）
+## 游戏主场景（阶段2）：Player 闭环 + 调试面板验证 存档/读档/时间推进
 extends Node2D
 
 const TEST_SLOT := "test"
+
+const PLAYER_SCENE := preload("res://scenes/characters/Player.tscn")
+const TRAINING_DUMMY_SCENE := preload("res://scenes/characters/TrainingDummy.tscn")
+const HUD_SCENE := preload("res://scenes/ui/HUD.tscn")
 
 @onready var _time_label: Label = $UILayer/DebugPanel/VBox/TimeLabel
 @onready var _advance_button: Button = $UILayer/DebugPanel/VBox/AdvanceMonthButton
@@ -10,7 +14,8 @@ const TEST_SLOT := "test"
 @onready var _menu_button: Button = $UILayer/DebugPanel/VBox/MenuButton
 
 func _ready() -> void:
-	add_to_group("savable")  # 阶段1重构为 doc 16 的 11 段存档结构
+	# 阶段2：Player 接管 player_state 存档段，本节点不再注册 savable
+	_spawn_stage_entities()
 	_advance_button.pressed.connect(_on_advance_month_pressed)
 	_save_button.pressed.connect(_on_save_pressed)
 	_load_button.pressed.connect(_on_load_pressed)
@@ -18,22 +23,22 @@ func _ready() -> void:
 	EventBus.month_changed.connect(_on_month_changed)
 	_refresh_time_label()
 	# 主菜单"继续"进入时应用待载入状态（无待载数据时为空操作）
+	# 此时 Player 已在 savable 组内（子节点 _ready 先于根节点），可收到待载数据
 	SaveManager.apply_pending_load()
 	_refresh_time_label()
+
+func _spawn_stage_entities() -> void:
+	var player := PLAYER_SCENE.instantiate()
+	player.position = Vector2(200, 300)
+	add_child(player)
+	var dummy := TRAINING_DUMMY_SCENE.instantiate()
+	dummy.position = Vector2(460, 300)
+	add_child(dummy)
+	$UILayer.add_child(HUD_SCENE.instantiate())
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("game_menu"):
 		GameManager.return_to_menu()
-
-func get_save_section() -> String:
-	return "player_state"  # 阶段2后由 Player 节点接管此段
-
-func get_save_state() -> Dictionary:
-	# 占位：真实玩家状态在阶段2由 Player 接管
-	return {"skeleton_marker": "stage0_game"}
-
-func load_save_state(_state: Dictionary) -> void:
-	_refresh_time_label()
 
 func _on_advance_month_pressed() -> void:
 	TimeManager.advance_month()

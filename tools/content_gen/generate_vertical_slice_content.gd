@@ -239,6 +239,7 @@ func _gen_items() -> Array[Resource]:
 
 func _gen_characters() -> Array[Resource]:
 	var list: Array[Resource] = []
+	list.append(_make_player_default())
 	list.append(_make_qin_bo_yuan())
 	list.append(_make_su_zhi())
 	list.append(_make_tie_niu())
@@ -246,6 +247,30 @@ func _gen_characters() -> Array[Resource]:
 	list.append(_make_ye_lang_yao())
 	list.append(_make_hei_feng_dao_fei())
 	return list
+
+
+# ---------------------------------------------------------------- 玩家（1，阶段2占位）
+
+func _make_player_default() -> CharacterData:
+	var c := CharacterData.new()
+	c.id = "char_player_default"
+	c.display_name = "无名修士"
+	c.title = "初入江湖"
+	c.character_type = CharacterData.CharacterType.PLAYER
+	c.faction_id = ""
+	c.realm_index = 1
+	c.realm_layer = 1
+	c.spirit_roots = {"木": 60}
+	c.dao_heart = {"坚毅": 50, "慈悲": 50, "杀伐": 30, "求知": 50, "自由": 40, "执念": 40}
+	c.base_stats = {"hp": 100, "mp": 50, "atk": 12, "def": 8, "m_atk": 10, "m_def": 8, "speed": 9, "crit": 0.05, "accuracy": 0.90, "evasion": 0.08}
+	c.spirit_stats = {"灵根强度": 60, "神魂": 50, "因果": 50, "气运": 50}
+	c.personality = "尚未定型（阶段2占位，捏人流程在垂直切片 Step 1 实现）"
+	c.goal = "在青石镇立足"
+	c.fear = "未知"
+	c.interest = "变强"
+	c.secret = ""
+	c.relationships = {}
+	return c
 
 
 func _make_qin_bo_yuan() -> CharacterData:
