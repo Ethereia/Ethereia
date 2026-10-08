@@ -16,6 +16,7 @@ func run_all() -> Dictionary:
 	all.append_array(_gen_quests())
 	all.append_array(_gen_events())
 	all.append_array(_gen_dialogues())
+	all.append_array(_gen_skills())
 
 	var report := {"saved": [], "reload_errors": []}
 	for res: Resource in all:
@@ -51,6 +52,8 @@ func _path_for(id: String) -> String:
 		table = "events"
 	elif id.begins_with("dlg_"):
 		table = "dialogues"
+	elif id.begins_with("skill_"):
+		table = "skills"
 	return "res://data/%s/%s.tres" % [table, id]
 
 
@@ -121,7 +124,7 @@ func _gen_regions() -> Array[Resource]:
 	mountain.resources = {"item_ling_cao": 3}
 	mountain.locations = [
 		{"id": "loc_hei_feng_xiao_jing", "position": Vector2i(3, 2), "location_type": "道路", "level_range": Vector2i(2, 4), "terrain": "山地", "tags": ["山道"], "resources": {"item_ling_cao": 1}, "encounters": ["char_ye_lang_yao", "char_hei_feng_dao_fei"], "factions": ["faction_hei_feng_dao"], "quest_hooks": []},
-		{"id": "loc_yao_lang_chao_xue", "position": Vector2i(8, 6), "location_type": "巢穴", "level_range": Vector2i(3, 6), "terrain": "山地", "tags": ["妖兽"], "resources": {}, "encounters": ["char_ye_lang_yao"], "factions": [], "quest_hooks": ["quest_diao_cha_hei_feng_ling"]},
+		{"id": "loc_yao_lang_chao_xue", "position": Vector2i(8, 6), "location_type": "巢穴", "level_range": Vector2i(3, 6), "terrain": "山地", "tags": ["妖兽"], "resources": {}, "encounters": ["char_ye_lang_yao", "char_hei_feng_yao_lang_wang"], "factions": [], "quest_hooks": ["quest_diao_cha_hei_feng_ling"]},
 		{"id": "loc_fei_qi_kuang_keng", "position": Vector2i(6, 3), "location_type": "遗迹", "level_range": Vector2i(2, 5), "terrain": "山地", "tags": ["矿坑", "废弃"], "resources": {}, "encounters": ["char_hei_feng_dao_fei"], "factions": ["faction_hei_feng_dao"], "quest_hooks": []},
 	]
 	mountain.factions_present = ["faction_hei_feng_dao"]
@@ -239,7 +242,7 @@ func _gen_items() -> Array[Resource]:
 	return list
 
 
-# ---------------------------------------------------------------- 角色（6：4 NPC + 2 敌人）
+# ---------------------------------------------------------------- 角色（7：1 玩家 + 4 NPC + 2 敌人 + 1 Boss）
 
 func _gen_characters() -> Array[Resource]:
 	var list: Array[Resource] = []
@@ -250,10 +253,9 @@ func _gen_characters() -> Array[Resource]:
 	list.append(_make_a_ying())
 	list.append(_make_ye_lang_yao())
 	list.append(_make_hei_feng_dao_fei())
+	list.append(_make_boss())
 	return list
 
-
-# ---------------------------------------------------------------- 玩家（1，阶段2占位）
 
 func _make_player_default() -> CharacterData:
 	var c := CharacterData.new()
@@ -560,3 +562,64 @@ func _make_dlg_a_ying() -> DialogueData:
 		{"node_id": "n2", "speaker_id": "char_a_ying", "text": "嗯。", "emotion": "疏离", "conditions": {}, "choices": [], "next": ""},
 	]
 	return d
+
+
+# ---------------------------------------------------------------- 技能（8，阶段4）
+## SkillData 字段见 doc 29 §2.3；status_effects 的 status_id 用中文状态名（灼烧/冻结/破甲/atk_buff）
+
+func _gen_skills() -> Array[Resource]:
+	var list: Array[Resource] = []
+	list.append(_make_skill("skill_ling_qi_dan", "灵气弹", SkillData.SkillType.SINGLE, "木", 25.0, 10, 2.0, 260.0, 0.0, [], "凝聚木行灵气射出，命中造成单体伤害。", ["m_atk"]))
+	list.append(_make_skill("skill_qing_teng_chan", "青藤缠", SkillData.SkillType.CONTROL, "木", 0.0, 12, 8.0, 200.0, 0.0, [{"status_id": "冻结", "chance": 1.0, "duration": 2.0, "power": 1.0}], "召出青藤缠住敌人双足，使其定身 2 秒。", []))
+	list.append(_make_skill("skill_hui_chun_shu", "回春术", SkillData.SkillType.DEFENSE, "", 30.0, 15, 10.0, 0.0, 0.0, [], "木行生气流转周身，恢复自身气血。", []))
+	list.append(_make_skill("skill_lang_feng_ren", "风刃", SkillData.SkillType.SINGLE, "风", 14.0, 0, 3.0, 280.0, 0.0, [], "妖狼啸出的一道风刃。", []))
+	list.append(_make_skill("skill_lang_si_ya", "撕咬", SkillData.SkillType.SINGLE, "风", 16.0, 0, 4.0, 60.0, 0.0, [{"status_id": "破甲", "chance": 0.4, "duration": 5.0, "power": 0.3}], "凶狠的撕咬，可能撕裂防御。", []))
+	list.append(_make_skill("skill_dao_fei_dao", "飞刀", SkillData.SkillType.SINGLE, "金", 18.0, 0, 3.0, 300.0, 0.0, [], "盗匪掷出的淬毒飞刀。", []))
+	list.append(_make_skill("skill_boss_pu_ji", "扑击", SkillData.SkillType.AOE, "风", 22.0, 0, 5.0, 120.0, 90.0, [], "妖狼王腾空扑击，掀起狂风席卷四周。", []))
+	list.append(_make_skill("skill_boss_hao_jiao", "嚎叫", SkillData.SkillType.DEFENSE, "", 0.0, 0, 12.0, 0.0, 0.0, [{"status_id": "atk_buff", "chance": 1.0, "duration": 8.0, "power": 0.5}], "狼王仰天长嚎，凶性大发。", []))
+	return list
+
+
+func _make_skill(id: String, display_name: String, type: int, element: String, power: float, mp: int, cd: float, range_px: float, aoe: float, statuses: Array, desc: String, scaling: Array) -> SkillData:
+	var s := SkillData.new()
+	s.id = id
+	s.display_name = display_name
+	s.skill_type = type
+	s.element = element
+	s.power = power
+	s.mp_cost = mp
+	s.cooldown = cd
+	s.cast_range = range_px
+	s.aoe_radius = aoe
+	var typed_statuses: Array[Dictionary] = []
+	typed_statuses.assign(statuses)  # 动态传参退化为 Array，assign 逐元素类型化（源码禁 Array[T](x) 构造）
+	var typed_scaling: Array[String] = []
+	typed_scaling.assign(scaling)
+	s.status_effects = typed_statuses
+	s.scaling_stats = typed_scaling
+	s.description = desc
+	return s
+
+
+# ---------------------------------------------------------------- Boss（1，阶段4）
+
+func _make_boss() -> CharacterData:
+	var c := CharacterData.new()
+	c.id = "char_hei_feng_yao_lang_wang"
+	c.display_name = "黑风妖狼王"
+	c.title = "黑风岭之主"
+	c.character_type = CharacterData.CharacterType.ENEMY
+	c.faction_id = ""
+	c.realm_index = 1
+	c.realm_layer = 9  # 炼气九层巅峰（垂直切片 Step 11 Boss）
+	c.spirit_roots = {"风": 80}
+	c.dao_heart = {}
+	c.base_stats = {"hp": 500, "mp": 50, "atk": 20, "def": 10, "m_atk": 8, "m_def": 6, "speed": 11, "crit": 0.08, "accuracy": 0.9, "evasion": 0.1}
+	c.spirit_stats = {"灵根强度": 80, "神魂": 45, "因果": 20, "气运": 15}
+	c.personality = "凶暴狡诈，统治黑风岭多年"
+	c.goal = "吞尽岭中灵气，化形为妖"
+	c.fear = "岭下那道门的气息"
+	c.interest = "血食"
+	c.secret = "它腹下有一道黑色印记——与冥门的气息同源"
+	c.relationships = {}
+	return c

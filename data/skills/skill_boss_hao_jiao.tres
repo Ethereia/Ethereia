@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SkillData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/skill_data.gd" id="1_ivnv6"]
+
+[resource]
+script = ExtResource("1_ivnv6")
+id = "skill_boss_hao_jiao"
+display_name = "嚎叫"
+skill_type = 3
+power = 0.0
+cooldown = 12.0
+cast_range = 0.0
+status_effects = Array[Dictionary]([{
+"chance": 1.0,
+"duration": 8.0,
+"power": 0.5,
+"status_id": "atk_buff"
+}])
+description = "狼王仰天长嚎，凶性大发。"

@@ -19,6 +19,18 @@ func _ready() -> void:
 	EventBus.npc_interacted.connect(_on_npc_interacted)
 
 
+## 系统提示（复用对话框）：Boss 剧情节点等无 NPC 场景
+func show_notice(text: String) -> void:
+	if is_open:
+		return
+	var fake := DialogueData.new()
+	fake.entry_node_id = "n0"
+	fake.nodes = [{"node_id": "n0", "speaker_id": "", "text": text, "emotion": "", "conditions": {}, "choices": [], "next": ""}]
+	_npc_id = ""
+	_data = fake
+	_open(fake.nodes[0])
+
+
 func _on_npc_interacted(npc_id: String, dialogue_id: String) -> void:
 	if is_open:
 		return
@@ -58,8 +70,11 @@ func _find_node(node_id: String) -> Dictionary:
 func _render_node(node: Dictionary) -> void:
 	_clear_choices()
 	var speaker_id := String(node.get("speaker_id", _npc_id))
-	var speaker := DataManager.get_entry("characters", speaker_id) as CharacterData
-	_speaker_label.text = speaker.display_name if speaker else speaker_id
+	var speaker_name := "???"
+	if not speaker_id.is_empty():
+		var speaker := DataManager.get_entry("characters", speaker_id) as CharacterData
+		speaker_name = speaker.display_name if speaker != null else speaker_id
+	_speaker_label.text = speaker_name
 	_text_label.text = String(node.get("text", ""))
 	var choices: Array = node.get("choices", [])
 	var next := String(node.get("next", ""))

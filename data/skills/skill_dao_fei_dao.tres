@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SkillData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/skill_data.gd" id="1_4tqc1"]
+
+[resource]
+script = ExtResource("1_4tqc1")
+id = "skill_dao_fei_dao"
+display_name = "飞刀"
+element = "金"
+power = 18.0
+cooldown = 3.0
+cast_range = 300.0
+description = "盗匪掷出的淬毒飞刀。"

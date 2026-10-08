@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SkillData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/skill_data.gd" id="1_d1eii"]
+
+[resource]
+script = ExtResource("1_d1eii")
+id = "skill_lang_feng_ren"
+display_name = "风刃"
+element = "风"
+power = 14.0
+cooldown = 3.0
+cast_range = 280.0
+description = "妖狼啸出的一道风刃。"

@@ -27,7 +27,7 @@ locations = Array[Dictionary]([{
 "tags": ["山道"],
 "terrain": "山地"
 }, {
-"encounters": ["char_ye_lang_yao"],
+"encounters": ["char_ye_lang_yao", "char_hei_feng_yao_lang_wang"],
 "factions": [],
 "id": "loc_yao_lang_chao_xue",
 "level_range": Vector2i(3, 6),

@@ -10,6 +10,8 @@ var max_hp := 100.0
 var current_hp := 100.0
 var max_mp := 50.0
 var current_mp := 50.0
+var max_stamina := 100.0  # 体力运行时占位（Schema 冻结无此键）：普攻/近战技能资源，Phase 5 接入
+var current_stamina := 100.0
 
 var atk := 10.0
 var defense := 5.0

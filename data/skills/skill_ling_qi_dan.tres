@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SkillData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/skill_data.gd" id="1_g6ask"]
+
+[resource]
+script = ExtResource("1_g6ask")
+id = "skill_ling_qi_dan"
+display_name = "灵气弹"
+element = "木"
+power = 25.0
+mp_cost = 10
+cooldown = 2.0
+cast_range = 260.0
+scaling_stats = Array[String](["m_atk"])
+description = "凝聚木行灵气射出，命中造成单体伤害。"

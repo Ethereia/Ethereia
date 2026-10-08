@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/gameplay/player.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/combat/player_skill_controller.gd" id="2_skill"]
 
 [sub_resource type="CircleShape2D" id="body_shape"]
 radius = 16.0
@@ -41,3 +42,6 @@ shape = SubResource("interact_shape")
 [node name="AttackTimer" type="Timer" parent="."]
 wait_time = 1.0
 autostart = true
+
+[node name="SkillController" type="Node" parent="."]
+script = ExtResource("2_skill")

@@ -6,10 +6,12 @@ extends CharacterBody2D
 const PLAYER_DATA_ID := "char_player_default"  # 捉人流程落地后由存档角色 id 替代
 
 var stats := PlayerStats.new()
+var status := StatusContainer.new()  # 状态容器（灼烧/冻结/破甲等）
 
 @onready var _attack_range: Area2D = $AttackRange
 @onready var _attack_timer: Timer = $AttackTimer
 @onready var _interact_range: Area2D = $InteractRange
+@onready var _skill_controller: Node = $SkillController
 
 
 func _ready() -> void:
@@ -25,7 +27,18 @@ func _ready() -> void:
 	EventBus.player_stats_changed.emit()
 
 
-func _physics_process(_delta: float) -> void:
+## 玩家元素：主灵根第一键（SkillExecutor 克制计算用）
+func element_of() -> String:
+	if stats.data != null and not stats.data.spirit_roots.is_empty():
+		return String(stats.data.spirit_roots.keys()[0])
+	return ""
+
+
+func _physics_process(delta: float) -> void:
+	status.tick(delta, self)
+	if status.is_frozen():
+		velocity = Vector2.ZERO  # 冻结：禁移动（攻击 CD 照走，普攻 tick 不在物理帧）
+		return
 	var dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	velocity = dir * CultivationUtils.move_speed(stats.base_speed)
 	move_and_slide()

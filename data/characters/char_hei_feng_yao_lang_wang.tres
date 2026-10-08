@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/character_data.gd" id="1_sds3a"]
+
+[resource]
+script = ExtResource("1_sds3a")
+id = "char_hei_feng_yao_lang_wang"
+display_name = "黑风妖狼王"
+title = "黑风岭之主"
+character_type = 3
+realm_index = 1
+realm_layer = 9
+spirit_roots = {
+"风": 80
+}
+base_stats = {
+"accuracy": 0.9,
+"atk": 20,
+"crit": 0.08,
+"def": 10,
+"evasion": 0.1,
+"hp": 500,
+"m_atk": 8,
+"m_def": 6,
+"mp": 50,
+"speed": 11
+}
+spirit_stats = {
+"因果": 20,
+"气运": 15,
+"灵根强度": 80,
+"神魂": 45
+}
+personality = "凶暴狡诈，统治黑风岭多年"
+goal = "吞尽岭中灵气，化形为妖"
+fear = "岭下那道门的气息"
+interest = "血食"
+secret = "它腹下有一道黑色印记——与冥门的气息同源"

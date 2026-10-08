@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SkillData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/skill_data.gd" id="1_tpgpm"]
+
+[resource]
+script = ExtResource("1_tpgpm")
+id = "skill_hui_chun_shu"
+display_name = "回春术"
+skill_type = 3
+power = 30.0
+mp_cost = 15
+cooldown = 10.0
+cast_range = 0.0
+description = "木行生气流转周身，恢复自身气血。"

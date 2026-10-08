@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SkillData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/skill_data.gd" id="1_mo20r"]
+
+[resource]
+script = ExtResource("1_mo20r")
+id = "skill_lang_si_ya"
+display_name = "撕咬"
+element = "风"
+power = 16.0
+cooldown = 4.0
+cast_range = 60.0
+status_effects = Array[Dictionary]([{
+"chance": 0.4,
+"duration": 5.0,
+"power": 0.3,
+"status_id": "破甲"
+}])
+description = "凶狠的撕咬，可能撕裂防御。"

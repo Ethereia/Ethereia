@@ -7,6 +7,7 @@ extends CanvasLayer
 @onready var _hp_bar: ProgressBar = $TopRight/VBox/HPBox/HPBar
 @onready var _mp_bar: ProgressBar = $TopRight/VBox/MPBox/MPBar
 @onready var _paused_label: Label = $PausedLabel
+@onready var _cd_labels: Array[Label] = [$SkillBar/Slot1/VBox/CDLabel, $SkillBar/Slot2/VBox/CDLabel, $SkillBar/Slot3/VBox/CDLabel]
 
 
 func _ready() -> void:
@@ -23,6 +24,30 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		get_tree().paused = not get_tree().paused
 		_paused_label.visible = get_tree().paused
+
+
+func _process(_delta: float) -> void:
+	_refresh_skillbar()
+
+
+func _refresh_skillbar() -> void:
+	var player := get_tree().get_first_node_in_group("player")
+	if player == null or not "skill_controller" in player.get_parent():
+		return
+	var ctl: Node = player.get_node("SkillController")
+	var mp: float = player.stats.current_mp
+	for slot in range(1, 4):
+		var label := _cd_labels[slot - 1]
+		var remaining: float = ctl.get_remaining(slot)
+		if remaining > 0.01:
+			label.text = "%.1fs" % remaining
+		else:
+			label.text = " "
+		# MP 不足置灰（冷却中已显橙色）
+		var skill_id: String = ctl.SKILL_SLOTS.get(slot, "")
+		var skill := DataManager.get_entry("skills", skill_id) as SkillData
+		var enough_mp: bool = skill == null or mp >= float(skill.mp_cost)
+		label.get_parent().get_parent().modulate = Color(1, 1, 1, 1) if enough_mp else Color(0.5, 0.5, 0.5, 1)
 
 
 func _refresh() -> void:

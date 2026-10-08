@@ -23,7 +23,24 @@ func _ready() -> void:
 	add_to_group("savable")
 	add_to_group("world_manager")  # Player 存档时经此组查 current_region
 	EventBus.player_died.connect(_on_player_died)
+	EventBus.enemy_died.connect(_on_boss_died)
 	switch_region(DEFAULT_REGION, "", true)
+
+
+## Boss 击杀剧情（垂直切片 Step 12 伏笔）：world_state 标记 + 冥门提示
+func _on_boss_died(enemy_id: String, _region_id: String) -> void:
+	if enemy_id != "char_hei_feng_yao_lang_wang":
+		return
+	_regions_state["boss_yao_lang_wang_killed"] = true
+	# 延迟弹提示：等掉落生成完、战斗余波平息
+	get_tree().create_timer(1.5).timeout.connect(_show_nemesis_notice)
+
+
+func _show_nemesis_notice() -> void:
+	var dialogs := get_tree().get_nodes_in_group("dialogue_ui")
+	if dialogs.is_empty():
+		return
+	dialogs[0].show_notice("妖狼王倒下的瞬间，你看见它腹下的黑色印记渗出幽光——灵脉下方，仿佛有什么东西正隔着极其遥远的距离，与那道光共鸣……\n\n（垂直切片 Step 12 · 冥门伏笔）")
 
 
 ## 玩家死亡占位处理：短暂停顿后半血回当前区域出生点（阶段5 修仙死亡惩罚另做）

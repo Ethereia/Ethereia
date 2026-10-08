@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SkillData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/skill_data.gd" id="1_fgc86"]
+
+[resource]
+script = ExtResource("1_fgc86")
+id = "skill_boss_pu_ji"
+display_name = "扑击"
+skill_type = 1
+element = "风"
+power = 22.0
+cooldown = 5.0
+aoe_radius = 90.0
+description = "妖狼王腾空扑击，掀起狂风席卷四周。"

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SkillData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/skill_data.gd" id="1_bmjak"]
+
+[resource]
+script = ExtResource("1_bmjak")
+id = "skill_qing_teng_chan"
+display_name = "青藤缠"
+skill_type = 2
+element = "木"
+power = 0.0
+mp_cost = 12
+cooldown = 8.0
+cast_range = 200.0
+status_effects = Array[Dictionary]([{
+"chance": 1.0,
+"duration": 2.0,
+"power": 1.0,
+"status_id": "冻结"
+}])
+description = "召出青藤缠住敌人双足，使其定身 2 秒。"
