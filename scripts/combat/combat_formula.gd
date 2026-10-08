@@ -10,7 +10,7 @@ static func basic_attack_hit(accuracy: float, evasion: float) -> bool:
 
 
 ## 基础普攻伤害（doc 08 §4 骨架的普攻特化）：
-## raw = skill_power(普攻基准 10，占位) * attacker_power(atk)
+## raw = skill_power(普攻基准) * attacker_power(atk)
 ##       * element_multiplier(普攻无元素 = 1.0) * critical_multiplier
 ## final = raw * defense_multiplier(def/(def+100)) * state_multiplier(无状态 = 1.0)
 static func basic_attack_damage(atk: float, def: float, crit: float) -> int:
@@ -21,7 +21,11 @@ static func basic_attack_damage(atk: float, def: float, crit: float) -> int:
 	return maxi(1, int(round(final)))  # 伤害至少 1，避免高防完全免疫
 
 
-# --- 占位常数（Phase 4 调参集中在此） ---
-const BASIC_ATTACK_POWER := 10.0
+# --- 占位常数（2026-10-08 首次调平；Phase 4 战斗系统再校准） ---
+## 调平目标 TTK（炼气一层玩家 150HP / def12 vs 黑风岭敌人）：
+##   玩家→野狼妖 4 刀(~4s)、玩家→黑风盗匪 6 刀(~6s)
+##   野狼妖→玩家 11 刀(~13s)、盗匪→玩家 9 刀(~11s)：单刀占同级 HP 约 9-11%
+##   双敌围攻时玩家约 5s 倒地——需走位拉开，丹药/复活有意义
+const BASIC_ATTACK_POWER := 1.2
 const CRIT_MULTIPLIER := 1.5
 const DEFENSE_CONSTANT := 100.0

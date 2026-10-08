@@ -60,7 +60,7 @@ func _spawn_encounters(loc: Dictionary, pos: Vector2, dead_keys: Array) -> void:
 			continue
 		var loc_id := String(loc["id"])
 		var key := loc_id + "_" + char_id
-		var spawn_pos := pos + Vector2(0, 48)
+		var spawn_pos := pos + Vector2(0, 160)  # 与 location 中心拉开：玩家落点不在敌人脸上，留反应时间
 		if data.character_type == CharacterData.CharacterType.ENEMY:
 			if key in dead_keys:
 				continue  # 存档记录已死，不重建
