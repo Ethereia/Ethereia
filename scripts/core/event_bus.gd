@@ -43,4 +43,7 @@ signal quest_progress_changed(quest_id: String)
 # --- 修仙（阶段5） ---
 signal cultivation_state_changed  # 境界/经验/功法变化，UI 统一刷新
 
+# --- 宗门（阶段6） ---
+signal sect_state_changed  # 驻地/建筑/弟子变化，UI 统一刷新
+
 @warning_ignore_restore("unused_signal")

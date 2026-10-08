@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scripts/core/game.gd" id="1_game"]
 [ext_resource type="Script" path="res://scripts/world/world_manager.gd" id="2_world"]
@@ -10,6 +10,8 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/InventoryPanel.tscn" id="8_inventory_panel"]
 [ext_resource type="Script" path="res://scripts/cultivation/cultivation_manager.gd" id="9_cultivation"]
 [ext_resource type="PackedScene" path="res://scenes/ui/CharacterPanel.tscn" id="10_panel"]
+[ext_resource type="Script" path="res://scripts/sect/sect_manager.gd" id="11_sect"]
+[ext_resource type="PackedScene" path="res://scenes/ui/SectPanel.tscn" id="12_sect_panel"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_game")
@@ -28,6 +30,9 @@ script = ExtResource("5_quest")
 
 [node name="CultivationManager" type="Node" parent="."]
 script = ExtResource("9_cultivation")
+
+[node name="SectManager" type="Node" parent="."]
+script = ExtResource("11_sect")
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
@@ -77,3 +82,5 @@ text = "返回主菜单"
 [node name="InventoryPanel" parent="UILayer" instance=ExtResource("8_inventory_panel")]
 
 [node name="CharacterPanel" parent="UILayer" instance=ExtResource("10_panel")]
+
+[node name="SectPanel" parent="UILayer" instance=ExtResource("12_sect_panel")]

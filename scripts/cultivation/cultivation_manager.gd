@@ -95,7 +95,7 @@ func attempt_major_breakthrough() -> void:
 	var tech := _active_tech_resource()
 	if tech != null:
 		score += float(tech.breakthrough_modifiers.get("all", 0.0))
-	var probability := clampf(score / 100.0, 0.05, 0.95)
+	var probability := clampf(score / 100.0 + _sect_breakthrough_bonus(), 0.05, 0.95)
 	print("[Cultivation] 大境界突破概率 %.0f%%" % (probability * 100.0))
 	if randf() < probability:
 		realm_index += 1
@@ -143,7 +143,7 @@ func _factor_value(factor: String) -> float:
 		"materials":
 			return 0.5  # 占位：突破材料阶段 6/7 接入
 		"environment":
-			return 0.5  # 占位：聚灵阵等环境加成阶段 6 接入
+			return _sect_environment_factor()  # 聚灵阵等环境加成（阶段 6 接入）
 		"random":
 			return randf()
 	return 0.0
@@ -199,6 +199,17 @@ func set_active_technique(technique_id: String) -> void:
 func _try_tribulation() -> void:
 	if realm_index >= CultivationConstants.TRIBULATION_START_REALM:
 		print("[Cultivation] 天劫将至……（阶段 7+ 实现，本次放行）")
+
+
+## 宗门环境因子（聚灵阵，阶段 6）：组查询解耦，无则 0.5 兜底
+func _sect_environment_factor() -> float:
+	var arr: Array = get_tree().get_nodes_in_group("sect_manager")
+	return float(arr[0].get_environment_factor()) if arr.size() > 0 else 0.5
+
+
+func _sect_breakthrough_bonus() -> float:
+	var arr: Array = get_tree().get_nodes_in_group("sect_manager")
+	return float(arr[0].get_breakthrough_bonus()) if arr.size() > 0 else 0.0
 
 
 # --- 事件入账 ---
